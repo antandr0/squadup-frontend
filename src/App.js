@@ -22,16 +22,14 @@ const AppContent = () => {
           <div style={{
             fontSize: '60px',
             marginBottom: '20px',
-            animation: 'pulse 2s infinite, rotate 3s linear infinite'
+            animation: 'pulse 2s infinite'
           }}>
             🎮
           </div>
-          <div style={{ fontSize: '18px', color: '#b0b0d0' }}>
+          <div style={{ fontSize: '18px', color: '#b0b0d0', marginBottom: '20px' }}>
             Загрузка SquadUp...
           </div>
-          {/* ЯРКИЙ ИНДИКАТОР ОБНОВЛЕНИЯ */}
           <div style={{
-            marginTop: '20px',
             padding: '10px 20px',
             background: 'linear-gradient(45deg, #00ff88, #4e54c8)',
             borderRadius: '10px',
