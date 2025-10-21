@@ -2,6 +2,20 @@ import React from "react";
 import "./index.css";
 
 function App() {
+  const [backendStatus, setBackendStatus] = React.useState("checking...");
+
+  React.useEffect(() => {
+    // Проверяем статус бэкенда
+    fetch("https://squadup-backend.onrender.com/api/health")
+      .then(response => response.json())
+      .then(data => {
+        setBackendStatus("✅ Online");
+      })
+      .catch(error => {
+        setBackendStatus("❌ Offline");
+      });
+  }, []);
+
   return React.createElement(
     "div",
     { 
@@ -38,8 +52,21 @@ function App() {
     ),
     React.createElement(
       "p",
-      { style: { fontSize: "1rem", opacity: 0.8 } },
-      "Backend is running at: https://squadup-backend.onrender.com"
+      { style: { fontSize: "1rem", marginBottom: "10px" } },
+      "Backend Status: " + backendStatus
+    ),
+    React.createElement(
+      "a",
+      { 
+        href: "https://squadup-backend.onrender.com/api/health",
+        target: "_blank",
+        style: { 
+          color: "#4e54c8",
+          textDecoration: "none",
+          fontSize: "0.9rem"
+        }
+      },
+      "Test Backend API"
     )
   );
 }
