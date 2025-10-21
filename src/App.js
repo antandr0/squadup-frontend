@@ -18,18 +18,19 @@ function App() {
   return React.createElement(
     "div",
     { 
-      className: "App",
       style: {
         background: "linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)",
         color: "white",
         minHeight: "100vh",
         fontFamily: "'Segoe UI', Tahoma, sans-serif",
+        padding: "80px 20px",
+        textAlign: "center",
         position: "relative",
         overflow: "hidden"
       }
     },
     
-    // Анимированный фон
+    // Фоновые градиенты
     React.createElement("div", {
       style: {
         position: "absolute",
@@ -38,9 +39,8 @@ function App() {
         right: 0,
         bottom: 0,
         background: `
-          radial-gradient(circle at 20% 80%, rgba(78, 84, 200, 0.2) 0%, transparent 50%),
-          radial-gradient(circle at 80% 20%, rgba(138, 43, 226, 0.2) 0%, transparent 50%),
-          radial-gradient(circle at 40% 40%, rgba(0, 255, 136, 0.1) 0%, transparent 50%)
+          radial-gradient(circle at 20% 80%, rgba(78, 84, 200, 0.15) 0%, transparent 50%),
+          radial-gradient(circle at 80% 20%, rgba(138, 43, 226, 0.15) 0%, transparent 50%)
         `,
         zIndex: 1
       }
@@ -53,10 +53,8 @@ function App() {
         style: {
           position: "relative",
           zIndex: 2,
-          maxWidth: "1200px",
-          margin: "0 auto",
-          padding: "100px 20px",
-          textAlign: "center"
+          maxWidth: "800px",
+          margin: "0 auto"
         }
       },
       
@@ -65,18 +63,17 @@ function App() {
         "h1",
         {
           style: {
-            fontSize: "clamp(3rem, 7vw, 5rem)",
-            fontWeight: "900",
-            marginBottom: "30px",
-            background: "linear-gradient(45deg, #4e54c8, #8a2be2, #00ff88, #ff6b6b, #ffd93d)",
+            fontSize: "clamp(2.5rem, 6vw, 4rem)",
+            fontWeight: "800",
+            marginBottom: "20px",
+            background: "linear-gradient(45deg, #4e54c8, #8a2be2, #00ff88)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             backgroundSize: "400% 400%",
-            animation: "gradientShift 6s ease infinite",
-            textShadow: "0 0 30px rgba(78, 84, 200, 0.5)"
+            animation: "gradientShift 6s ease infinite"
           }
         },
-        "🎮 SQUADUP PREMIUM"
+        "🚀 SQUADUP PREMIUM"
       ),
       
       // Подзаголовок
@@ -84,36 +81,33 @@ function App() {
         "p",
         {
           style: {
-            fontSize: "clamp(1.3rem, 3vw, 1.8rem)",
+            fontSize: "1.3rem",
             color: "#b0b0d0",
-            marginBottom: "20px",
-            lineHeight: "1.6",
-            fontWeight: "300"
+            marginBottom: "30px",
+            lineHeight: "1.6"
           }
         },
-        "Твоя идеальная игровая команда ждет тебя"
+        "Найди свою идеальную игровую команду"
       ),
       
-      // ЯРКИЙ индикатор - невозможно пропустить
+      // ЯРКИЙ индикатор
       React.createElement(
         "div",
         {
           style: {
-            background: "linear-gradient(45deg, #ff6b6b, #4e54c8, #00ff88)",
+            background: "linear-gradient(45deg, #00ff88, #4e54c8)",
             color: "white",
-            padding: "20px 40px",
+            padding: "15px 30px",
             borderRadius: "50px",
             display: "inline-block",
-            margin: "40px 0 50px 0",
+            margin: "30px 0 40px 0",
             fontWeight: "bold",
-            fontSize: "1.4rem",
-            boxShadow: "0 8px 30px rgba(255, 107, 107, 0.4)",
-            animation: "pulse 1.5s infinite, gradientShift 4s ease infinite",
-            border: "2px solid rgba(255, 255, 255, 0.3)",
-            textShadow: "0 2px 10px rgba(0, 0, 0, 0.3)"
+            fontSize: "1.2rem",
+            boxShadow: "0 6px 20px rgba(0, 255, 136, 0.4)",
+            animation: "pulse 2s infinite"
           }
         },
-        "🔥 ПРЕМИУМ ДИЗАЙН v4.0 АКТИВИРОВАН!"
+        "✨ ПРЕМИУМ ДИЗАЙН АКТИВИРОВАН!"
       ),
       
       // Статус бэкенда
@@ -121,41 +115,36 @@ function App() {
         "div",
         {
           style: {
-            background: "rgba(255, 255, 255, 0.15)",
-            padding: "20px 30px",
-            borderRadius: "20px",
+            background: "rgba(255, 255, 255, 0.1)",
+            padding: "15px 25px",
+            borderRadius: "15px",
             display: "inline-block",
-            marginBottom: "60px",
-            backdropFilter: "blur(15px)",
-            border: "1px solid rgba(255, 255, 255, 0.25)",
-            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)"
+            marginBottom: "50px",
+            backdropFilter: "blur(10px)",
+            border: "1px solid rgba(255, 255, 255, 0.2)"
           }
         },
-        "🌐 Backend Status: ",
+        "Backend Status: ",
         React.createElement(
           "strong",
           { 
             style: { 
-              color: backendStatus.includes("✅") ? "#00ff88" : 
-                     backendStatus.includes("checking") ? "#ffc107" : "#ff6b6b",
-              fontSize: "1.3rem",
-              textShadow: backendStatus.includes("✅") ? "0 0 10px #00ff88" : "none"
+              color: backendStatus.includes("✅") ? "#00ff88" : "#ff6b6b" 
             }
           },
           backendStatus
         )
       ),
       
-      // Кнопки CTA
+      // Кнопки
       React.createElement(
         "div",
         {
           style: {
             display: "flex",
-            gap: "25px",
+            gap: "20px",
             justifyContent: "center",
-            flexWrap: "wrap",
-            marginBottom: "100px"
+            flexWrap: "wrap"
           }
         },
         React.createElement(
@@ -165,26 +154,24 @@ function App() {
               background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
               color: "white",
               border: "none",
-              padding: "20px 40px",
+              padding: "18px 35px",
               borderRadius: "50px",
-              fontSize: "1.3rem",
+              fontSize: "1.2rem",
               fontWeight: "bold",
               cursor: "pointer",
-              transition: "all 0.4s ease",
-              boxShadow: "0 8px 25px rgba(102, 126, 234, 0.5)",
-              position: "relative",
-              overflow: "hidden"
+              transition: "all 0.3s ease",
+              boxShadow: "0 6px 20px rgba(102, 126, 234, 0.4)"
             },
             onMouseEnter: (e) => {
-              e.target.style.transform = "translateY(-5px) scale(1.05)";
-              e.target.style.boxShadow = "0 15px 40px rgba(102, 126, 234, 0.7)";
+              e.target.style.transform = "translateY(-3px)";
+              e.target.style.boxShadow = "0 10px 30px rgba(102, 126, 234, 0.6)";
             },
             onMouseLeave: (e) => {
-              e.target.style.transform = "translateY(0) scale(1)";
-              e.target.style.boxShadow = "0 8px 25px rgba(102, 126, 234, 0.5)";
+              e.target.style.transform = "translateY(0)";
+              e.target.style.boxShadow = "0 6px 20px rgba(102, 126, 234, 0.4)";
             }
           },
-          "🚀 Начать играть бесплатно"
+          "🎮 Начать играть бесплатно"
         ),
         React.createElement(
           "button",
@@ -192,94 +179,27 @@ function App() {
             style: {
               background: "transparent",
               color: "#4e54c8",
-              border: "3px solid #4e54c8",
-              padding: "18px 38px",
+              border: "2px solid #4e54c8",
+              padding: "16px 32px",
               borderRadius: "50px",
-              fontSize: "1.3rem",
+              fontSize: "1.2rem",
               fontWeight: "bold",
               cursor: "pointer",
-              transition: "all 0.4s ease",
-              backdropFilter: "blur(10px)",
-              position: "relative",
-              overflow: "hidden"
+              transition: "all 0.3s ease",
+              backdropFilter: "blur(10px)"
             },
             onMouseEnter: (e) => {
               e.target.style.background = "#4e54c8";
               e.target.style.color = "white";
-              e.target.style.transform = "translateY(-3px)";
-              e.target.style.boxShadow = "0 10px 30px rgba(78, 84, 200, 0.4)";
+              e.target.style.transform = "translateY(-2px)";
             },
             onMouseLeave: (e) => {
               e.target.style.background = "transparent";
               e.target.style.color = "#4e54c8";
               e.target.style.transform = "translateY(0)";
-              e.target.style.boxShadow = "none";
             }
           },
           "👥 Войти в систему"
-        )
-      ),
-      
-      // Информация о версии
-      React.createElement(
-        "div",
-        {
-          style: {
-            background: "rgba(255, 255, 255, 0.1)",
-            padding: "30px",
-            borderRadius: "20px",
-            maxWidth: "600px",
-            margin: "0 auto",
-            backdropFilter: "blur(10px)",
-            border: "1px solid rgba(255, 255, 255, 0.2)"
-          }
-        },
-        React.createElement(
-          "h3",
-          {
-            style: {
-              color: "#4e54c8",
-              marginBottom: "15px",
-              fontSize: "1.5rem"
-            }
-          },
-          "✨ Что нового в v4.0:"
-        ),
-        React.createElement(
-          "ul",
-          {
-            style: {
-              color: "#b0b0d0",
-              textAlign: "left",
-              lineHeight: "1.8",
-              fontSize: "1.1rem"
-            }
-          },
-          React.createElement("li", null, "🎨 Полностью переработанный дизайн"),
-          React.createElement("li", null, "🌈 Анимированные градиенты"),
-          React.createElement("li", null, "⚡ Glass morphism эффекты"),
-          React.createElement("li", null, "🚀 Интерактивные элементы"),
-          React.createElement("li", null, "📱 Полная адаптивность")
-        )
-      ),
-      
-      // Футер с временем обновления
-      React.createElement(
-        "div",
-        {
-          style: {
-            marginTop: "80px",
-            paddingTop: "40px",
-            borderTop: "1px solid rgba(255, 255, 255, 0.15)",
-            color: "#b0b0d0",
-            fontSize: "14px"
-          }
-        },
-        "SquadUp Premium v4.0 • ",
-        React.createElement(
-          "strong",
-          { style: { color: "#4e54c8" } },
-          "Обновлено: " + new Date().toLocaleString('ru-RU')
         )
       )
     )
