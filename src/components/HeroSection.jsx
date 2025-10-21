@@ -1,4 +1,5 @@
 import React from 'react';
+import AnimatedGradient from './AnimatedGradient';
 
 const HeroSection = ({ onOpenAuth }) => {
   return (
@@ -15,12 +16,9 @@ const HeroSection = ({ onOpenAuth }) => {
         <h1 style={{
           fontSize: 'clamp(2.5rem, 6vw, 4rem)',
           fontWeight: 'bold',
-          marginBottom: '20px',
-          background: 'linear-gradient(45deg, #4e54c8, #8a2be2)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent'
+          marginBottom: '20px'
         }}>
-          Твоя идеальная команда ждет тебя
+          <AnimatedGradient>Твоя идеальная команда ждет тебя</AnimatedGradient>
         </h1>
         <p style={{
           fontSize: '1.3rem',
