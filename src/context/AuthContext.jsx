@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import { authService } from '../services/api';
 
 const AuthContext = createContext();
@@ -16,61 +16,64 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      // В реальном приложении здесь был бы запрос для проверки токена
-      const demoUser = {
-        id: '1',
-        email: 'user@example.com',
-        profile: {
-          nickname: 'DemoUser',
-          overallRating: 4.5,
-          playMode: 'both',
-          totalReviews: 0
-        }
-      };
-      setUser(demoUser);
-    }
-    setLoading(false);
+    checkAuth();
   }, []);
 
-  const login = async (credentials) => {
+  const checkAuth = async () => {
     try {
-      const result = await authService.login(credentials);
-      if (result.success) {
-        setUser(result.data.user);
-        return { success: true };
+      console.log('🔐 Проверка авторизации...');
+      
+      const token = authService.getToken();
+      
+      console.log('🔑 Token exists:', !!token);
+      
+      if (token) {
+        // В реальном приложении здесь был бы запрос к API для проверки токена
+        // Для демо используем localStorage
+        const storedUser = localStorage.getItem('squadup_user');
+        if (storedUser) {
+          const userData = JSON.parse(storedUser);
+          setUser(userData);
+          window.userId = userData.id;
+          console.log('✅ Пользователь авторизован');
+        } else {
+          setUser(null);
+          console.log('❌ Пользователь не авторизован');
+        }
+      } else {
+        setUser(null);
+        console.log('❌ Токен не найден');
       }
-      return { success: false, error: result.error };
     } catch (error) {
-      return { success: false, error: error.message };
+      console.error('❌ Ошибка проверки авторизации:', error);
+      setUser(null);
+    } finally {
+      setLoading(false);
+      console.log('🏁 Завершена проверка авторизации');
     }
   };
 
-  const register = async (userData) => {
-    try {
-      const result = await authService.register(userData);
-      if (result.success) {
-        setUser(result.data.user);
-        return { success: true };
-      }
-      return { success: false, error: result.error };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
+  const login = (userData) => {
+    console.log('🔐 Логин пользователя:', userData);
+    setUser(userData);
+    window.userId = userData.id;
+    localStorage.setItem('squadup_user', JSON.stringify(userData));
   };
 
   const logout = () => {
+    console.log('🚪 Выход из системы');
     authService.logout();
     setUser(null);
+    window.userId = null;
+    localStorage.removeItem('squadup_user');
   };
 
   const value = {
     user,
+    loading,
     login,
-    register,
     logout,
-    loading
+    isAuthenticated: !!user
   };
 
   return (
