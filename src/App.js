@@ -90,18 +90,7 @@ function App() {
             lineHeight: "1.2"
           }
         },
-        "Find Your ",
-        React.createElement(
-          "span",
-          {
-            style: {
-              background: "linear-gradient(45deg, #4e54c8, #8a2be2)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent"
-            }
-          },
-          "Perfect Team"
-        )
+        "Find Your Perfect Team"
       ),
       React.createElement(
         "p",
@@ -130,39 +119,6 @@ function App() {
           }
         },
         "Get Started"
-      ),
-      React.createElement(
-        "div",
-        {
-          style: {
-            marginTop: "40px",
-            padding: "20px",
-            background: "rgba(255,255,255,0.05)",
-            borderRadius: "10px"
-          }
-        },
-        React.createElement(
-          "p",
-          null,
-          "Backend Status: ",
-          React.createElement(
-            "span",
-            { style: { color: "#00ff88" } },
-            "✅ Online"
-          )
-        ),
-        React.createElement(
-          "a",
-          {
-            href: "https://squadup-backend-03vr.onrender.com/api/health",
-            target: "_blank",
-            style: {
-              color: "#4e54c8",
-              textDecoration: "none"
-            }
-          },
-          "Test Backend API"
-        )
       )
     )
   );
