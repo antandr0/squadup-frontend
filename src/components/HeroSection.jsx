@@ -20,7 +20,7 @@ const HeroSection = ({ onOpenAuth }) => {
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent'
         }}>
-          🚀 SQUADUP PREMIUM
+          Твоя идеальная команда ждет тебя
         </h1>
         <p style={{
           fontSize: '1.3rem',
