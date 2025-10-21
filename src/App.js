@@ -74,7 +74,7 @@ function App() {
             animation: "gradientShift 8s ease infinite"
           }
         },
-        "🚀 SQUADUP PREMIUM"
+        "🚀 SQUADUP PREMIUM v3.0"
       ),
       
       // Подзаголовок
@@ -108,7 +108,7 @@ function App() {
             animation: "pulse 2s infinite"
           }
         },
-        "✨ ПРЕМИУМ ДИЗАЙН v2.0 АКТИВИРОВАН!"
+        "✨ ПРЕМИУМ ДИЗАЙН АКТИВИРОВАН!"
       ),
       
       // Статус бэкенда
@@ -203,199 +203,6 @@ function App() {
             }
           },
           "👥 Войти в систему"
-        )
-      ),
-      
-      // Сетка функций
-      React.createElement(
-        "div",
-        {
-          style: {
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-            gap: "30px",
-            maxWidth: "1100px",
-            margin: "0 auto 80px auto"
-          }
-        },
-        
-        // Функция 1
-        React.createElement(
-          "div",
-          {
-            style: {
-              background: "rgba(30, 30, 60, 0.8)",
-              padding: "40px 30px",
-              borderRadius: "20px",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-              backdropFilter: "blur(15px)",
-              transition: "all 0.4s ease",
-              position: "relative",
-              overflow: "hidden"
-            },
-            onMouseEnter: (e) => {
-              e.target.style.transform = "translateY(-10px) scale(1.02)";
-              e.target.style.boxShadow = "0 20px 40px rgba(0, 0, 0, 0.4)";
-              e.target.style.borderColor = "rgba(78, 84, 200, 0.3)";
-            },
-            onMouseLeave: (e) => {
-              e.target.style.transform = "translateY(0) scale(1)";
-              e.target.style.boxShadow = "none";
-              e.target.style.borderColor = "rgba(255, 255, 255, 0.1)";
-            }
-          },
-          React.createElement("div", { 
-            style: { 
-              fontSize: "3rem", 
-              marginBottom: "20px",
-              animation: "float 3s ease-in-out infinite" 
-            } 
-          }, "🎯"),
-          React.createElement("h3", { 
-            style: { 
-              marginBottom: "15px", 
-              color: "white",
-              fontSize: "1.4rem"
-            } 
-          }, "Умный подбор команды"),
-          React.createElement("p", { 
-            style: { 
-              color: "#b0b0d0", 
-              lineHeight: "1.6",
-              fontSize: "1rem"
-            } 
-          }, "AI алгоритмы подбирают игроков с идеальным совпадением по стилю игры, рейтингу и расписанию")
-        ),
-        
-        // Функция 2
-        React.createElement(
-          "div",
-          {
-            style: {
-              background: "rgba(30, 30, 60, 0.8)",
-              padding: "40px 30px",
-              borderRadius: "20px",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-              backdropFilter: "blur(15px)",
-              transition: "all 0.4s ease",
-              position: "relative",
-              overflow: "hidden"
-            },
-            onMouseEnter: (e) => {
-              e.target.style.transform = "translateY(-10px) scale(1.02)";
-              e.target.style.boxShadow = "0 20px 40px rgba(0, 0, 0, 0.4)";
-              e.target.style.borderColor = "rgba(138, 43, 226, 0.3)";
-            },
-            onMouseLeave: (e) => {
-              e.target.style.transform = "translateY(0) scale(1)";
-              e.target.style.boxShadow = "none";
-              e.target.style.borderColor = "rgba(255, 255, 255, 0.1)";
-            }
-          },
-          React.createElement("div", { 
-            style: { 
-              fontSize: "3rem", 
-              marginBottom: "20px",
-              animation: "float 3s ease-in-out infinite",
-              animationDelay: "0.5s"
-            } 
-          }, "🗺️"),
-          React.createElement("h3", { 
-            style: { 
-              marginBottom: "15px", 
-              color: "white",
-              fontSize: "1.4rem"
-            } 
-          }, "Геолокационный поиск"),
-          React.createElement("p", { 
-            style: { 
-              color: "#b0b0d0", 
-              lineHeight: "1.6",
-              fontSize: "1rem"
-            } 
-          }, "Находи тиммейтов в своем городе для минимального пинга и возможности играть офлайн")
-        ),
-        
-        // Функция 3
-        React.createElement(
-          "div",
-          {
-            style: {
-              background: "rgba(30, 30, 60, 0.8)",
-              padding: "40px 30px",
-              borderRadius: "20px",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-              backdropFilter: "blur(15px)",
-              transition: "all 0.4s ease",
-              position: "relative",
-              overflow: "hidden"
-            },
-            onMouseEnter: (e) => {
-              e.target.style.transform = "translateY(-10px) scale(1.02)";
-              e.target.style.boxShadow = "0 20px 40px rgba(0, 0, 0, 0.4)";
-              e.target.style.borderColor = "rgba(0, 255, 136, 0.3)";
-            },
-            onMouseLeave: (e) => {
-              e.target.style.transform = "translateY(0) scale(1)";
-              e.target.style.boxShadow = "none";
-              e.target.style.borderColor = "rgba(255, 255, 255, 0.1)";
-            }
-          },
-          React.createElement("div", { 
-            style: { 
-              fontSize: "3rem", 
-              marginBottom: "20px",
-              animation: "float 3s ease-in-out infinite",
-              animationDelay: "1s"
-            } 
-          }, "🎙️"),
-          React.createElement("h3", { 
-            style: { 
-              marginBottom: "15px", 
-              color: "white",
-              fontSize: "1.4rem"
-            } 
-          }, "Голосовой чат WebRTC"),
-          React.createElement("p", { 
-            style: { 
-              color: "#b0b0d0", 
-              lineHeight: "1.6",
-              fontSize: "1rem"
-            } 
-          }, "Встроенный P2P голосовой чат с кристально чистым звуком. Без задержек, без посредников")
-        )
-      ),
-      
-      // Футер
-      React.createElement(
-        "div",
-        {
-          style: {
-            marginTop: "60px",
-            paddingTop: "40px",
-            borderTop: "1px solid rgba(255, 255, 255, 0.1)",
-            color: "#b0b0d0",
-            fontSize: "14px"
-          }
-        },
-        "SquadUp Premium v2.0 • ",
-        React.createElement(
-          "strong",
-          { style: { color: "#4e54c8" } },
-          "Сделано с ❤️ для геймеров"
-        ),
-        React.createElement("br"),
-        React.createElement(
-          "span",
-          {
-            style: {
-              fontSize: "12px",
-              opacity: "0.7",
-              marginTop: "10px",
-              display: "inline-block"
-            }
-          },
-          "Обновлено: " + new Date().toLocaleString('ru-RU')
         )
       )
     )
