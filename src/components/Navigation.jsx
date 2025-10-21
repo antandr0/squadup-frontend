@@ -40,8 +40,7 @@ const Navigation = () => {
           <button 
             onClick={handleHomeClick}
             style={{
-              background: 'linear-gradient(45deg, #4e54c8, #8a2be2, #ff6b6b, #4e54c8)',
-              backgroundSize: '400% 400%',
+              background: 'none',
               border: 'none',
               cursor: 'pointer',
               display: 'flex',
@@ -50,11 +49,10 @@ const Navigation = () => {
               color: 'white',
               fontSize: '16px',
               padding: '8px 16px',
-              borderRadius: '25px',
-              animation: 'gradientShift 3s ease infinite'
+              borderRadius: '25px'
             }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4e54c8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <line x1="6" x2="10" y1="12" y2="12"></line>
               <line x1="8" x2="8" y1="10" y2="14"></line>
               <line x1="15" x2="15.01" y1="13" y2="13"></line>
@@ -64,7 +62,11 @@ const Navigation = () => {
             <span style={{
               fontSize: '20px',
               fontWeight: 'bold',
-              color: 'white'
+              background: 'linear-gradient(45deg, #4e54c8, #8a2be2, #ff6b6b, #4e54c8)',
+              backgroundSize: '400% 400%',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              animation: 'gradientShift 3s ease infinite'
             }}>
               SquadUp
             </span>
