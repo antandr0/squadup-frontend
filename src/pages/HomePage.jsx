@@ -13,32 +13,166 @@ const HomePage = () => {
   const [authMode, setAuthMode] = useState('register');
   const { user, login } = useAuth();
 
-  console.log('🏠 HomePage State:', { user });
-
   const handleOpenAuth = (mode) => {
-    console.log('🎯 Открытие модалки авторизации:', mode);
     setAuthMode(mode);
     setAuthModalOpen(true);
   };
 
   const handleAuthSuccess = (userData) => {
-    console.log('✅ Успешная аутентификация:', userData);
-    
     if (userData && userData.user) {
       login(userData.user);
     }
-    
     setAuthModalOpen(false);
-    console.log('🔄 Интерфейс должен обновиться автоматически');
   };
 
-  // Если пользователь авторизован, показываем улучшенный лендинг
+  // Премиальный футер компонент
+  const PremiumFooter = ({ isAuthenticated }) => (
+    <footer style={{
+      background: 'linear-gradient(135deg, #1a1a2e 0%, #0f0f23 100%)',
+      padding: '80px 0 30px 0',
+      textAlign: 'center',
+      borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+      position: 'relative',
+      overflow: 'hidden'
+    }}>
+      {/* Фоновые элементы */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: `
+          radial-gradient(circle at 20% 80%, rgba(78, 84, 200, 0.05) 0%, transparent 50%),
+          radial-gradient(circle at 80% 20%, rgba(138, 43, 226, 0.05) 0%, transparent 50%)
+        `,
+        zIndex: 1
+      }}></div>
+      
+      <div className="container" style={{ position: 'relative', zIndex: 2 }}>
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          style={{
+            fontSize: '2.5rem',
+            marginBottom: '20px',
+            background: 'linear-gradient(45deg, #4e54c8, #8a2be2)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}
+        >
+          {isAuthenticated ? 'Готов к новым победам?' : 'Готов найти свою идеальную команду?'}
+        </motion.h2>
+        
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          style={{
+            color: 'var(--text-secondary)',
+            fontSize: '1.2rem',
+            marginBottom: isAuthenticated ? '40px' : '10px',
+            lineHeight: '1.6'
+          }}
+        >
+          {isAuthenticated 
+            ? 'Присоединяйся к тысячам геймеров, которые уже нашли свою идеальную команду'
+            : 'Присоединяйся к нам'
+          }
+        </motion.p>
+
+        {!isAuthenticated && (
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            style={{
+              color: 'var(--text-secondary)',
+              fontSize: '1rem',
+              marginBottom: '30px'
+            }}
+          >
+            <strong>Без подписок. Бесплатно. Сейчас.</strong>
+          </motion.p>
+        )}
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          style={{ 
+            display: 'flex', 
+            gap: '15px', 
+            justifyContent: 'center', 
+            flexWrap: 'wrap' 
+          }}
+        >
+          {isAuthenticated ? (
+            <>
+              <button
+                className="btn-primary"
+                style={{
+                  padding: '20px 40px',
+                  fontSize: '1.2rem'
+                }}
+                onClick={() => window.location.reload()}
+              >
+                🎮 Начать играть
+              </button>
+              <button
+                className="btn-secondary"
+                style={{
+                  padding: '20px 40px',
+                  fontSize: '1.2rem'
+                }}
+                onClick={() => handleOpenAuth('login')}
+              >
+                👥 Поиск игроков
+              </button>
+            </>
+          ) : (
+            <button
+              className="btn-primary"
+              style={{
+                padding: '20px 40px',
+                fontSize: '1.2rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px'
+              }}
+              onClick={() => handleOpenAuth('register')}
+            >
+              🚀 Начать бесплатно
+            </button>
+          )}
+        </motion.div>
+        
+        {/* Автор проекта */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
+          style={{
+            marginTop: '50px',
+            paddingTop: '20px',
+            borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+            color: 'var(--text-secondary)',
+            fontSize: '14px'
+          }}
+        >
+          project by <strong style={{ color: 'var(--primary-blue)' }}>AntAndr</strong>
+        </motion.div>
+      </div>
+    </footer>
+  );
+
+  // Премиальный контент для авторизованных пользователей
   if (user) {
     return (
       <div style={{ 
         background: 'var(--primary-dark)',
-        minHeight: '100vh',
-        paddingTop: '80px'
+        minHeight: '100vh'
       }}>
         <AuthModal
           isOpen={authModalOpen}
@@ -47,15 +181,29 @@ const HomePage = () => {
           initialMode={authMode}
         />
 
-        {/* Герой-секция для авторизованных пользователей */}
+        {/* Улучшенная герой-секция для авторизованных */}
         <section style={{
           minHeight: '60vh',
           background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)',
           display: 'flex',
           alignItems: 'center',
           position: 'relative',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          paddingTop: '80px'
         }}>
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: `
+              radial-gradient(circle at 20% 80%, rgba(78, 84, 200, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(138, 43, 226, 0.1) 0%, transparent 50%)
+            `,
+            zIndex: 1
+          }}></div>
+
           <div className="container" style={{ position: 'relative', zIndex: 2 }}>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -132,19 +280,18 @@ const HomePage = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.8 }}
+                className="glass"
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '10px',
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  padding: '10px 20px',
-                  borderRadius: '50px',
-                  backdropFilter: 'blur(10px)'
+                  padding: '12px 24px',
+                  borderRadius: '50px'
                 }}
               >
                 <div style={{
-                  width: '8px',
-                  height: '8px',
+                  width: '10px',
+                  height: '10px',
                   borderRadius: '50%',
                   background: 'var(--success-green)',
                   animation: 'pulse 2s infinite'
@@ -158,7 +305,7 @@ const HomePage = () => {
           </div>
         </section>
 
-        {/* Остальные секции лендинга */}
+        {/* Остальные секции с улучшенными анимациями */}
         <motion.div
           initial="offscreen"
           whileInView="onscreen"
@@ -191,68 +338,12 @@ const HomePage = () => {
           <OnboardingFlow onOpenAuth={handleOpenAuth} />
         </motion.div>
 
-        {/* Футер для авторизованных пользователей */}
-        <footer style={{
-          background: 'linear-gradient(135deg, #1a1a2e 0%, #0f0f23 100%)',
-          padding: '80px 0 30px 0',
-          textAlign: 'center',
-          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-          position: 'relative'
-        }}>
-          <div className="container">
-            <h2 style={{
-              fontSize: '2.5rem',
-              marginBottom: '20px'
-            }}>
-              Готов к новым победам?
-            </h2>
-            <p style={{
-              color: 'var(--text-secondary)',
-              fontSize: '1.2rem',
-              marginBottom: '40px'
-            }}>
-              Присоединяйся к тысячам геймеров, которые уже нашли свою идеальную команду
-            </p>
-            <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <button
-                className="btn-primary"
-                style={{
-                  padding: '20px 40px',
-                  fontSize: '1.2rem'
-                }}
-                onClick={() => window.location.reload()}
-              >
-                🎮 Начать играть
-              </button>
-              <button
-                className="btn-secondary"
-                style={{
-                  padding: '20px 40px',
-                  fontSize: '1.2rem'
-                }}
-                onClick={() => handleOpenAuth('login')}
-              >
-                👥 Поиск игроков
-              </button>
-            </div>
-            
-            {/* Автор проекта */}
-            <div style={{
-              marginTop: '50px',
-              paddingTop: '20px',
-              borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-              color: 'var(--text-secondary)',
-              fontSize: '14px'
-            }}>
-              project by <strong style={{ color: 'var(--primary-blue)' }}>AntAndr</strong>
-            </div>
-          </div>
-        </footer>
+        <PremiumFooter isAuthenticated={true} />
       </div>
     );
   }
 
-  // Стандартный лендинг для неавторизованных пользователей
+  // Стандартный лендинг для неавторизованных
   return (
     <div style={{ background: 'var(--primary-dark)' }}>
       <AuthModal
@@ -296,48 +387,7 @@ const HomePage = () => {
         <OnboardingFlow onOpenAuth={handleOpenAuth} />
       </motion.div>
 
-      {/* Футер для неавторизованных пользователей */}
-      <footer style={{
-        background: 'linear-gradient(135deg, #1a1a2e 0%, #0f0f23 100%)',
-        padding: '80px 0 30px 0',
-        textAlign: 'center',
-        borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-        position: 'relative'
-      }}>
-        <div className="container">
-          <h2 style={{
-            fontSize: '2.5rem',
-            marginBottom: '20px'
-          }}>
-            Готов найти свою идеальную команду?
-          </h2>
-          <p style={{
-            color: 'var(--text-secondary)',
-            fontSize: '1.2rem',
-            marginBottom: '10px'
-          }}>
-            Присоединяйся к нам
-          </p>
-          <p style={{
-            color: 'var(--text-secondary)',
-            fontSize: '1rem',
-            marginBottom: '30px'
-          }}>
-            <strong>Без подписок. Бесплатно. Сейчас.</strong>
-          </p>
-          
-          {/* Автор проекта */}
-          <div style={{
-            marginTop: '50px',
-            paddingTop: '20px',
-            borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-            color: 'var(--text-secondary)',
-            fontSize: '14px'
-          }}>
-            project by <strong style={{ color: 'var(--primary-blue)' }}>AntAndr</strong>
-          </div>
-        </div>
-      </footer>
+      <PremiumFooter isAuthenticated={false} />
     </div>
   );
 };
