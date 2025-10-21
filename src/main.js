@@ -9,3 +9,4 @@ root.render(
     <App />
   </React.StrictMode>
 );
+// Build timestamp: Вт 21 окт 2025 22:56:00 MSK
