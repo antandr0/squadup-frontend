@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navigation from './components/Navigation';
 import HomePage from './pages/HomePage';
@@ -6,7 +7,9 @@ import Dashboard from './components/Dashboard';
 import './styles/index.css';
 
 const AppContent = () => {
-  const { user, loading, logout } = useAuth();
+  const { user, loading } = useAuth();
+
+  console.log('🔐 App Content State:', { user, loading });
 
   if (loading) {
     return (
@@ -29,16 +32,31 @@ const AppContent = () => {
   return (
     <div className="App">
       <Navigation />
-      {user ? <Dashboard /> : <HomePage />}
+      <Routes>
+        {/* Если пользователь авторизован, перенаправляем в Dashboard */}
+        <Route 
+          path="/" 
+          element={user ? <Navigate to="/dashboard" replace /> : <HomePage />} 
+        />
+        {/* Dashboard доступен только авторизованным */}
+        <Route 
+          path="/dashboard" 
+          element={user ? <Dashboard /> : <Navigate to="/" replace />} 
+        />
+        {/* Запасной маршрут */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </div>
   );
 };
 
 function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <Router>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </Router>
   );
 }
 
