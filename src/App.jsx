@@ -1,9 +1,10 @@
-import TestComponent from "./components/TestComponent"
 import React, { useState } from 'react'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Navigation from './components/Navigation'
 import HeroSection from './components/HeroSection'
+import StatisticsSection from './components/StatisticsSection'
 import ProblemSolutionSection from './components/ProblemSolutionSection'
+import FeaturesSection from './components/FeaturesSection'
 import InteractiveDemo from './components/InteractiveDemo'
 import OnboardingFlow from './components/OnboardingFlow'
 import SuccessStories from './components/SuccessStories'
@@ -20,8 +21,9 @@ const AppContent = () => {
     setAuthModalOpen(true)
   }
 
-  const handleAuthSuccess = () => {
+  const handleAuthSuccess = (userData) => {
     setAuthModalOpen(false)
+    console.log('Auth success:', userData)
   }
 
   if (user) {
@@ -41,11 +43,12 @@ const AppContent = () => {
     }}>
       <Navigation />
       <HeroSection onOpenAuth={handleOpenAuth} />
+      <StatisticsSection />
       <ProblemSolutionSection />
+      <FeaturesSection />
       <InteractiveDemo />
       <OnboardingFlow onOpenAuth={handleOpenAuth} />
       <SuccessStories />
-      <TestComponent />
       <AuthModal 
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
