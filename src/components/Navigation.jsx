@@ -37,20 +37,24 @@ const Navigation = () => {
       }}>
         {/* Логотип и кнопка главной */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-          <button
+          <button 
             onClick={handleHomeClick}
             style={{
-              background: 'none',
+              background: 'linear-gradient(45deg, #4e54c8, #8a2be2, #ff6b6b, #4e54c8)',
+              backgroundSize: '400% 400%',
               border: 'none',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '10px',
               color: 'white',
-              fontSize: '16px'
+              fontSize: '16px',
+              padding: '8px 16px',
+              borderRadius: '25px',
+              animation: 'gradientShift 3s ease infinite'
             }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4e54c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <line x1="6" x2="10" y1="12" y2="12"></line>
               <line x1="8" x2="8" y1="10" y2="14"></line>
               <line x1="15" x2="15.01" y1="13" y2="13"></line>
@@ -58,14 +62,21 @@ const Navigation = () => {
               <rect width="20" height="12" x="2" y="6" rx="2"></rect>
             </svg>
             <span style={{
-              fontSize: '24px',
+              fontSize: '20px',
               fontWeight: 'bold',
-              background: 'linear-gradient(45deg, #4e54c8, #8a2be2)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
+              color: 'white'
             }}>
               SquadUp
             </span>
+            <style>
+              {`
+                @keyframes gradientShift {
+                  0% { background-position: 0% 50%; }
+                  50% { background-position: 100% 50%; }
+                  100% { background-position: 0% 50%; }
+                }
+              `}
+            </style>
           </button>
 
           {/* Информация о пользователе если авторизован */}
