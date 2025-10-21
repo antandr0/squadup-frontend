@@ -5,8 +5,8 @@ function App() {
   const [backendStatus, setBackendStatus] = React.useState("checking...");
 
   React.useEffect(() => {
-    // Проверяем статус бэкенда
-    fetch("https://squadup-backend.onrender.com/api/health")
+    // ПРАВИЛЬНЫЙ URL бэкенда
+    fetch("https://squadup-backend-03vr.onrender.com/api/health")
       .then(response => response.json())
       .then(data => {
         setBackendStatus("✅ Online");
@@ -58,7 +58,7 @@ function App() {
     React.createElement(
       "a",
       { 
-        href: "https://squadup-backend.onrender.com/api/health",
+        href: "https://squadup-backend-03vr.onrender.com/api/health",
         target: "_blank",
         style: { 
           color: "#4e54c8",
