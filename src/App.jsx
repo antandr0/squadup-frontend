@@ -1,3 +1,4 @@
+import TestComponent from "./components/TestComponent"
 import React, { useState } from 'react'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Navigation from './components/Navigation'
@@ -44,6 +45,7 @@ const AppContent = () => {
       <InteractiveDemo />
       <OnboardingFlow onOpenAuth={handleOpenAuth} />
       <SuccessStories />
+      <TestComponent />
       <AuthModal 
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
