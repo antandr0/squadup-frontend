@@ -1,43 +1,43 @@
-import React, { useState } from 'react';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import Navigation from './components/Navigation';
-import HeroSection from './components/HeroSection';
-import ProblemSolutionSection from './components/ProblemSolutionSection';
-import InteractiveDemo from './components/InteractiveDemo';
-import OnboardingFlow from './components/OnboardingFlow';
-import SuccessStories from './components/SuccessStories';
-import AuthModal from './components/AuthModal';
-import Dashboard from './components/Dashboard';
+import React, { useState } from 'react'
+import { AuthProvider, useAuth } from './context/AuthContext'
+import Navigation from './components/Navigation'
+import HeroSection from './components/HeroSection'
+import ProblemSolutionSection from './components/ProblemSolutionSection'
+import InteractiveDemo from './components/InteractiveDemo'
+import OnboardingFlow from './components/OnboardingFlow'
+import SuccessStories from './components/SuccessStories'
+import AuthModal from './components/AuthModal'
+import Dashboard from './components/Dashboard'
 
-// Основной компонент приложения
 const AppContent = () => {
-  const { user } = useAuth();
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState('login');
+  const { user } = useAuth()
+  const [authModalOpen, setAuthModalOpen] = useState(false)
+  const [authMode, setAuthMode] = useState('login')
 
   const handleOpenAuth = (mode = 'login') => {
-    setAuthMode(mode);
-    setAuthModalOpen(true);
-  };
+    setAuthMode(mode)
+    setAuthModalOpen(true)
+  }
 
-  const handleAuthSuccess = (userData) => {
-    setAuthModalOpen(false);
-    console.log('Auth success:', userData);
-  };
+  const handleAuthSuccess = () => {
+    setAuthModalOpen(false)
+  }
 
-  // Если пользователь авторизован, показываем Dashboard
   if (user) {
     return (
       <>
         <Navigation />
         <Dashboard />
       </>
-    );
+    )
   }
 
-  // Главная страница для неавторизованных пользователей
   return (
-    <>
+    <div style={{ 
+      background: '#0f0f23',
+      minHeight: '100vh',
+      color: 'white'
+    }}>
       <Navigation />
       <HeroSection onOpenAuth={handleOpenAuth} />
       <ProblemSolutionSection />
@@ -50,17 +50,16 @@ const AppContent = () => {
         onSuccess={handleAuthSuccess}
         initialMode={authMode}
       />
-    </>
-  );
-};
+    </div>
+  )
+}
 
-// Корневой компонент с провайдером контекста
 function App() {
   return (
     <AuthProvider>
       <AppContent />
     </AuthProvider>
-  );
+  )
 }
 
-export default App;
+export default App
