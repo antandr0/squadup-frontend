@@ -28,7 +28,15 @@ const HeroSection = ({ onOpenAuth }) => {
           marginBottom: '40px',
           lineHeight: '1.6'
         }}>
-          Найди свою идеальную игровую команду
+          Забудь про токсичных рандомов. Находи проверенных тиммейтов рядом с тобой.
+        </p>
+        <p style={{
+          fontSize: '1.1rem',
+          color: '#8a2be2',
+          marginBottom: '30px',
+          fontWeight: 'bold'
+        }}>
+          Пришло время SquadUp.
         </p>
         <button
           onClick={() => onOpenAuth('register')}
