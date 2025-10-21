@@ -19,7 +19,7 @@ const AppContent = () => {
         color: 'white'
       }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '48px', marginBottom: '20px' }}>{"🎮"}</div>
+          <div style={{ fontSize: '48px', marginBottom: '20px' }}>•</div>
           <div>Загрузка SquadUp...</div>
         </div>
       </div>
