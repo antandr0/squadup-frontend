@@ -62,9 +62,9 @@ const Footer = () => {
             📞 Контакты
           </h3>
           <ul style={{ listStyle: 'none', padding: 0, lineHeight: '1.8', fontSize: '0.9rem' }}>
-            <li>📧 Email: support@squadup.com</li>
-            <li>💬 Telegram: @squadup_support</li>
-            <li>🎮 Discord: SquadUp Community</li>
+            <li>📧 Email: redspicez@yandex.ru</li>
+            <li>💬 Telegram: @@aaaaandreevich</li>
+            <li>🎮 Steam: AntAndr</li>
             <li>🌐 Сайт: squadup-frontend.vercel.app</li>
           </ul>
         </div>
