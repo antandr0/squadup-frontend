@@ -35,7 +35,7 @@ const StatisticsSection = () => {
               }}>
                 237
               </div>
-              <div style={{ color: '#b0b0d0' }}>игроков, зато каких!</div>
+              <div style={{ color: '#b0b0d0' }}>игроков зарегистрированы, зато каких</div>
             </div>
           </AnimatedIcon>
           <AnimatedIcon delay={400}>
