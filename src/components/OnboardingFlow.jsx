@@ -43,7 +43,7 @@ const OnboardingFlow = ({ onOpenAuth }) => {
                 fontSize: '2rem',
                 marginBottom: '15px',
                 color: '#00ff88'
-              }}>✓</div>
+              }}>1</div>
               <h3 style={{ fontSize: '1.3rem', marginBottom: '15px', color: 'white' }}>
                 Вход через Steam/VK
               </h3>
@@ -72,7 +72,7 @@ const OnboardingFlow = ({ onOpenAuth }) => {
                 Расскажи о себе
               </h3>
               <p style={{ color: '#b0b0d0', lineHeight: '1.6' }}>
-                30 секунд - и твой профиль готов
+                поделись информацией о себе и твой профиль готов
               </p>
             </div>
           </AnimatedIcon>
