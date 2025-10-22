@@ -5,11 +5,11 @@ const Navigation = () => {
   const { user, logout } = useAuth();
 
   const handleHomeClick = () => {
-    window.location.href = '/';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleDashboardClick = () => {
-    window.location.href = '/';
+  const handleProfileClick = () => {
+    alert('🎮 Демо-режим: Профиль пользователя\n\nВ реальной версии здесь будет страница профиля с настройками, историей игр и рейтингом!');
   };
 
   const handleLogout = () => {
@@ -35,7 +35,7 @@ const Navigation = () => {
         justifyContent: 'space-between',
         alignItems: 'center'
       }}>
-        {/* Логотип и кнопка главной */}
+        {/* Логотип */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
           <button 
             onClick={handleHomeClick}
@@ -52,36 +52,17 @@ const Navigation = () => {
               borderRadius: '25px'
             }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4e54c8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <line x1="6" x2="10" y1="12" y2="12"></line>
-              <line x1="8" x2="8" y1="10" y2="14"></line>
-              <line x1="15" x2="15.01" y1="13" y2="13"></line>
-              <line x1="18" x2="18.01" y1="11" y2="11"></line>
-              <rect width="20" height="12" x="2" y="6" rx="2"></rect>
-            </svg>
             <span style={{
               fontSize: '20px',
               fontWeight: 'bold',
-              background: 'linear-gradient(45deg, #4e54c8, #8a2be2, #ff6b6b, #4e54c8)',
-              backgroundSize: '400% 400%',
+              background: 'linear-gradient(45deg, #4e54c8, #8a2be2)',
               WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              animation: 'gradientShift 3s ease infinite'
+              WebkitTextFillColor: 'transparent'
             }}>
               SquadUp
             </span>
-            <style>
-              {`
-                @keyframes gradientShift {
-                  0% { background-position: 0% 50%; }
-                  50% { background-position: 100% 50%; }
-                  100% { background-position: 0% 50%; }
-                }
-              `}
-            </style>
           </button>
 
-          {/* Информация о пользователе если авторизован */}
           {user && (
             <div style={{
               display: 'flex',
@@ -100,13 +81,12 @@ const Navigation = () => {
           )}
         </div>
 
-        {/* Правая часть навигации */}
+        {/* Правая часть навигации - ТОЛЬКО АВТОРИЗАЦИЯ */}
         <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
           {user ? (
-            // Если пользователь авторизован - показываем Dashboard и Выйти
             <>
               <button 
-                onClick={handleDashboardClick}
+                onClick={handleProfileClick}
                 style={{
                   background: 'rgba(0, 255, 136, 0.2)',
                   color: '#00ff88',
@@ -114,9 +94,6 @@ const Navigation = () => {
                   padding: '8px 16px',
                   borderRadius: '8px',
                   cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px',
                   fontSize: '14px'
                 }}
               >
@@ -132,9 +109,6 @@ const Navigation = () => {
                   padding: '8px 16px',
                   borderRadius: '8px',
                   cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px',
                   fontSize: '14px'
                 }}
               >
@@ -142,32 +116,10 @@ const Navigation = () => {
               </button>
             </>
           ) : (
-            // Если пользователь не авторизован
-            <>
-              <a href="#features" style={{
-                color: '#b0b0d0',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '5px',
-                transition: 'color 0.3s ease'
-              }} onMouseEnter={(e) => e.target.style.color = 'white'}
-              onMouseLeave={(e) => e.target.style.color = '#b0b0d0'}>
-                👥 Возможности
-              </a>
-
-              <a href="#demo" style={{
-                color: '#b0b0d0',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '5px',
-                transition: 'color 0.3s ease'
-              }} onMouseEnter={(e) => e.target.style.color = 'white'}
-              onMouseLeave={(e) => e.target.style.color = '#b0b0d0'}>
-                🗺️ Как работает
-              </a>
-            </>
+            // Пусто - все ссылки перенесены в футер
+            <div style={{ color: '#b0b0d0', fontSize: '0.9rem' }}>
+              Присоединяйся к сообществу
+            </div>
           )}
         </div>
       </div>
