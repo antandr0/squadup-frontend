@@ -47,3 +47,31 @@ code {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent-blue);
 }
+
+/* Глобальные анимации */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Плавные переходы для интерактивных элементов */
+button, a {
+  transition: all 0.3s ease;
+}
+
+/* Эффекты при наведении */
+.hover-lift:hover {
+  transform: translateY(-5px);
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
