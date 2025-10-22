@@ -18,7 +18,7 @@ const ProblemSolutionSection = () => {
               textAlign: 'center',
               color: '#ff6b6b'
             }}>
-              ❌ Надоело искать в Discord?
+              ❌ Надоело искать тиммейтов на различных площадках и сервисах?
             </h2>
           </AnimatedIcon>
           <div style={{
