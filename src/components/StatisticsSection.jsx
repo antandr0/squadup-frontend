@@ -33,9 +33,9 @@ const StatisticsSection = () => {
                 WebkitTextFillColor: 'transparent',
                 marginBottom: '10px'
               }}>
-                10K+
+                237
               </div>
-              <div style={{ color: '#b0b0d0' }}>активных геймеров</div>
+              <div style={{ color: '#b0b0d0' }}>игроков, зато каких!</div>
             </div>
           </AnimatedIcon>
           <AnimatedIcon delay={400}>
