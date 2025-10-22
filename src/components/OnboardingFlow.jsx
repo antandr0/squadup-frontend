@@ -96,7 +96,7 @@ const OnboardingFlow = ({ onOpenAuth }) => {
                 Найди команду
               </h3>
               <p style={{ color: '#b0b0d0', lineHeight: '1.6' }}>
-                Смотри кто играет рядом и приглашай
+                Смотри кто играет рядом и приглашай будущих друзей
               </p>
             </div>
           </AnimatedIcon>
