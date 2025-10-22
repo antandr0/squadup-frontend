@@ -35,7 +35,7 @@ const StatisticsSection = () => {
               }}>
                 237
               </div>
-              <div style={{ color: '#b0b0d0' }}>игроков зарегистрированы, зато каких</div>
+              <div style={{ color: '#b0b0d0' }}>игроков зарегистрированы, зато каких 💪</div>
             </div>
           </AnimatedIcon>
           <AnimatedIcon delay={400}>
@@ -48,9 +48,9 @@ const StatisticsSection = () => {
                 WebkitTextFillColor: 'transparent',
                 marginBottom: '10px'
               }}>
-                50+
+                3
               </div>
-              <div style={{ color: '#b0b0d0' }}>городов России</div>
+              <div style={{ color: '#b0b0d0' }}>пока что в 3 городах России 😏</div>
             </div>
           </AnimatedIcon>
           <AnimatedIcon delay={600}>
@@ -65,7 +65,7 @@ const StatisticsSection = () => {
               }}>
                 4.9
               </div>
-              <div style={{ color: '#b0b0d0' }}>средний рейтинг</div>
+              <div style={{ color: '#b0b0d0' }}>средний рейтинг игроков 🤙</div>
             </div>
           </AnimatedIcon>
         </div>
