@@ -10,8 +10,9 @@ import OnboardingFlow from './components/OnboardingFlow'
 import SuccessStories from './components/SuccessStories'
 import AuthModal from './components/AuthModal'
 import Dashboard from './components/Dashboard'
+import './index.css'
 
-const AppContent = () => {
+function AppContent() {
   const { user } = useAuth()
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const [authMode, setAuthMode] = useState('login')
