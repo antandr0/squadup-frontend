@@ -26,9 +26,7 @@ class ApiService {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      const data = await response.json();
-      console.log(`✅ API Success: ${endpoint}`, data);
-      return data;
+      return await response.json();
     } catch (error) {
       console.warn(`❌ API Failed: ${error.message}, using demo mode`);
       this.isDemoMode = true;
@@ -65,46 +63,30 @@ class ApiService {
             break;
             
           case '/api/profiles':
-            response = {
-              success: true,
-              data: {
-                profiles: [
-                  {
-                    id: "2",
-                    nickname: "ProPlayer",
-                    isOnline: true,
-                    overallRating: 4.8,
-                    playMode: "competitive",
-                    age: 25,
-                    aboutMe: "Ищу тиммейтов для ранговых игр. Играю серьезно!",
-                    games: ["Dota 2", "CS:GO"],
-                    location: "Москва"
-                  },
-                  {
-                    id: "3", 
-                    nickname: "CasualGamer",
-                    isOnline: true,
-                    overallRating: 4.2,
-                    playMode: "casual", 
-                    age: 22,
-                    aboutMe: "Играю для удовольствия, без токсичности",
-                    games: ["Valorant", "Overwatch 2"],
-                    location: "Санкт-Петербург"
-                  },
-                  {
-                    id: "4",
-                    nickname: "StrategicMind", 
-                    isOnline: false,
-                    overallRating: 4.9,
-                    playMode: "competitive",
-                    age: 28,
-                    aboutMe: "Тактический игрок, ищу команду для турниров",
-                    games: ["Dota 2", "League of Legends"],
-                    location: "Казань"
-                  }
-                ]
+            response = [
+              {
+                id: "2",
+                nickname: "ProPlayer",
+                isOnline: true,
+                overallRating: 4.8,
+                playMode: "competitive",
+                age: 25,
+                aboutMe: "Ищу тиммейтов для ранговых игр. Играю серьезно!",
+                games: ["Dota 2", "CS:GO"],
+                location: "Москва"
+              },
+              {
+                id: "3", 
+                nickname: "CasualGamer",
+                isOnline: true,
+                overallRating: 4.2,
+                playMode: "casual", 
+                age: 22,
+                aboutMe: "Играю для удовольствия, без токсичности",
+                games: ["Valorant", "Overwatch 2"],
+                location: "Санкт-Петербург"
               }
-            };
+            ];
             break;
             
           default:
@@ -122,16 +104,14 @@ class ApiService {
       body: JSON.stringify({ email, password }),
     });
     
-    // Обрабатываем разные форматы ответа
-    if (response.token) {
+    if (response.token && response.user) {
       localStorage.setItem('token', response.token);
       return { success: true, user: response.user };
-    } else if (response.data?.token) {
-      localStorage.setItem('token', response.data.token);
-      return { success: true, user: response.data.user };
+    } else if (response.error) {
+      return { success: false, error: response.error };
     }
     
-    return { success: false, error: response.error || 'Ошибка авторизации' };
+    return { success: false, error: 'Ошибка авторизации' };
   }
 
   async register(email, password, nickname) {
@@ -140,32 +120,18 @@ class ApiService {
       body: JSON.stringify({ email, password, nickname }),
     });
     
-    if (response.token) {
+    if (response.token && response.user) {
       localStorage.setItem('token', response.token);
       return { success: true, user: response.user };
-    } else if (response.data?.token) {
-      localStorage.setItem('token', response.data.token);
-      return { success: true, user: response.data.user };
+    } else if (response.error) {
+      return { success: false, error: response.error };
     }
     
-    return { success: false, error: response.error || 'Ошибка регистрации' };
+    return { success: false, error: 'Ошибка регистрации' };
   }
 
-  async getProfiles(filters = {}) {
-    const queryParams = new URLSearchParams(filters).toString();
-    const endpoint = queryParams ? `/api/profiles?${queryParams}` : '/api/profiles';
-    const response = await this.request(endpoint);
-    
-    // Обрабатываем разные форматы ответа
-    if (Array.isArray(response)) {
-      return response;
-    } else if (response.data?.profiles) {
-      return response.data.profiles;
-    } else if (response.profiles) {
-      return response.profiles;
-    }
-    
-    return [];
+  async getProfiles() {
+    return this.request('/api/profiles');
   }
 
   async updateProfile(profileData) {
@@ -173,6 +139,10 @@ class ApiService {
       method: 'POST',
       body: JSON.stringify(profileData),
     });
+  }
+
+  async getCurrentUser() {
+    return this.request('/api/auth/me');
   }
 }
 
