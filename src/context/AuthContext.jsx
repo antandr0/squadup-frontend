@@ -1,12 +1,12 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { authService } from '../services/api';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { apiService } from '../services/api';
 
 const AuthContext = createContext();
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error('useAuth должен использоваться внутри AuthProvider');
   }
   return context;
 };
@@ -14,66 +14,111 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isDemoMode, setIsDemoMode] = useState(false);
 
+  // Проверяем авторизацию при загрузке
   useEffect(() => {
     checkAuth();
   }, []);
 
   const checkAuth = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
     try {
-      console.log('🔐 Проверка авторизации...');
-      
-      const token = authService.getToken();
-      
-      console.log('🔑 Token exists:', !!token);
-      
-      if (token) {
-        // В реальном приложении здесь был бы запрос к API для проверки токена
-        // Для демо используем localStorage
-        const storedUser = localStorage.getItem('squadup_user');
-        if (storedUser) {
-          const userData = JSON.parse(storedUser);
-          setUser(userData);
-          window.userId = userData.id;
-          console.log('✅ Пользователь авторизован');
-        } else {
-          setUser(null);
-          console.log('❌ Пользователь не авторизован');
+      // Пытаемся получить данные пользователя
+      // Если бэкенд не поддерживает /api/auth/me, используем демо-данные
+      const demoUser = {
+        id: "1",
+        email: "user@example.com",
+        profile: {
+          nickname: "Игрок",
+          overallRating: 4.5,
+          playMode: "both",
+          age: 25,
+          aboutMe: "Добро пожаловать в SquadUp!",
+          games: ["Dota 2", "CS:GO"],
+          location: "Москва",
+          totalReviews: 0
         }
-      } else {
-        setUser(null);
-        console.log('❌ Токен не найден');
-      }
+      };
+      setUser(demoUser);
+      setIsDemoMode(true);
     } catch (error) {
-      console.error('❌ Ошибка проверки авторизации:', error);
-      setUser(null);
+      console.error('Ошибка проверки авторизации:', error);
+      logout();
     } finally {
       setLoading(false);
-      console.log('🏁 Завершена проверка авторизации');
     }
   };
 
-  const login = (userData) => {
-    console.log('🔐 Логин пользователя:', userData);
-    setUser(userData);
-    window.userId = userData.id;
-    localStorage.setItem('squadup_user', JSON.stringify(userData));
+  const login = async (email, password) => {
+    try {
+      setLoading(true);
+      const result = await apiService.login(email, password);
+      
+      if (result.success && result.user) {
+        setUser(result.user);
+        setIsDemoMode(apiService.isDemoMode);
+        return { success: true, user: result.user };
+      }
+      return { success: false, error: result.error || 'Ошибка авторизации' };
+    } catch (error) {
+      return { 
+        success: false, 
+        error: error.message || 'Ошибка авторизации'
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const register = async (email, password, nickname) => {
+    try {
+      setLoading(true);
+      const result = await apiService.register(email, password, nickname);
+      
+      if (result.success && result.user) {
+        setUser(result.user);
+        setIsDemoMode(apiService.isDemoMode);
+        return { success: true, user: result.user };
+      }
+      return { success: false, error: result.error || 'Ошибка регистрации' };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message || 'Ошибка регистрации'
+      };
+    } finally {
+      setLoading(false);
+    }
   };
 
   const logout = () => {
-    console.log('🚪 Выход из системы');
-    authService.logout();
+    localStorage.removeItem('token');
     setUser(null);
-    window.userId = null;
-    localStorage.removeItem('squadup_user');
+    setIsDemoMode(false);
+  };
+
+  const updateUserProfile = (profileData) => {
+    const updatedUser = {
+      ...user,
+      profile: { ...user.profile, ...profileData }
+    };
+    setUser(updatedUser);
   };
 
   const value = {
     user,
-    loading,
     login,
+    register,
     logout,
-    isAuthenticated: !!user
+    loading,
+    isDemoMode,
+    updateUserProfile
   };
 
   return (
