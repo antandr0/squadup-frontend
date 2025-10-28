@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import WebRTCManager from '../services/WebRTCManager';
+import DemoVoiceChat from './DemoVoiceChat';
 import './VoiceChat.css';
 
 const VoiceChat = () => {
@@ -10,18 +11,17 @@ const VoiceChat = () => {
   const [participants, setParticipants] = useState([]);
   const [isMuted, setIsMuted] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState('disconnected');
+  const [useDemoMode, setUseDemoMode] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   
   const webRTCManager = useRef(null);
   const audioElements = useRef(new Map());
 
   useEffect(() => {
-    // Инициализируем WebRTCManager
     webRTCManager.current = new WebRTCManager();
     
-    // Настройка обработчиков событий
     webRTCManager.current.onRemoteStream = (userId, stream) => {
       console.log('🔊 Remote stream received for user:', userId);
-      // Создаем audio элемент для воспроизведения удаленного потока
       const audio = new Audio();
       audio.srcObject = stream;
       audio.play().catch(e => console.error('Error playing audio:', e));
@@ -29,7 +29,6 @@ const VoiceChat = () => {
     };
 
     return () => {
-      // Очистка при размонтировании компонента
       if (webRTCManager.current) {
         webRTCManager.current.cleanup();
       }
@@ -41,19 +40,16 @@ const VoiceChat = () => {
     };
   }, []);
 
-  // Инициализация голосового чата
   const initializeVoiceChat = async () => {
     try {
       setConnectionStatus('connecting');
+      setErrorMessage('');
       
-      // Получаем доступ к микрофону
       await webRTCManager.current.getLocalAudioStream();
       
-      // Генерируем ID комнаты
       const newRoomId = generateRoomId();
       setRoomId(newRoomId);
       
-      // Подключаемся к signaling server
       await webRTCManager.current.connectToSignalingServer(
         newRoomId,
         user.id,
@@ -90,7 +86,6 @@ const VoiceChat = () => {
             console.log('👤 User left:', userId);
             setParticipants(prev => prev.filter(p => p.userId !== userId));
             
-            // Останавливаем audio элемент
             const audio = audioElements.current.get(userId);
             if (audio) {
               audio.pause();
@@ -100,7 +95,6 @@ const VoiceChat = () => {
           },
           
           onUserMuteUpdated: (userId, isMuted) => {
-            console.log(`🔇 User ${userId} mute:`, isMuted);
             setParticipants(prev => 
               prev.map(p => 
                 p.userId === userId ? { ...p, isMuted } : p
@@ -109,9 +103,8 @@ const VoiceChat = () => {
           },
           
           onError: (errorMessage) => {
-            console.error('Signaling error:', errorMessage);
             setConnectionStatus('error');
-            alert(`Ошибка подключения: ${errorMessage}`);
+            setErrorMessage(errorMessage);
           },
           
           userNickname: user.nickname
@@ -121,12 +114,7 @@ const VoiceChat = () => {
     } catch (error) {
       console.error('Error initializing voice chat:', error);
       setConnectionStatus('error');
-      
-      if (error.name === 'NotAllowedError') {
-        alert('Доступ к микрофону запрещен. Разрешите доступ в настройках браузера.');
-      } else {
-        alert(`Ошибка инициализации голосового чата: ${error.message}`);
-      }
+      setErrorMessage(error.message || 'Неизвестная ошибка');
     }
   };
 
@@ -143,7 +131,6 @@ const VoiceChat = () => {
     setConnectionStatus('disconnected');
     setParticipants([]);
     
-    // Очищаем все audio элементы
     audioElements.current.forEach(audio => {
       audio.pause();
       audio.srcObject = null;
@@ -163,47 +150,71 @@ const VoiceChat = () => {
   const handleVolumeChange = (userId, volume) => {
     setParticipants(prev => 
       prev.map(p => 
-        p.id === userId ? { ...p, volume } : p
+        p.userId === userId ? { ...p, volume } : p
       )
     );
     
-    // Регулировка громкости audio элемента
     const audio = audioElements.current.get(userId);
     if (audio) {
       audio.volume = volume / 100;
     }
   };
 
-  const copyRoomLink = () => {
-    navigator.clipboard.writeText(roomId);
-    alert('ID комнаты скопирован! Отправьте его друзьям для подключения.');
+  const enableDemoMode = () => {
+    setUseDemoMode(true);
+    setErrorMessage('');
   };
 
-  const invitePlayer = () => {
-    const nickname = prompt('Введите никнейм игрока для приглашения:');
-    if (nickname) {
-      // В будущем здесь будет интеграция с системой друзей/приглашений
-      alert(`Приглашение отправлено игроку ${nickname}!`);
-    }
+  const disableDemoMode = () => {
+    setUseDemoMode(false);
+    setErrorMessage('');
   };
 
-  const getConnectionStatusText = () => {
-    const statusMap = {
-      disconnected: 'Отключен',
-      connecting: 'Подключается...',
-      connected: 'Подключен',
-      error: 'Ошибка'
-    };
-    return statusMap[connectionStatus] || 'Неизвестно';
-  };
+  // Если включен демо-режим, показываем демо компонент
+  if (useDemoMode) {
+    return <DemoVoiceChat />;
+  }
 
+  // Если есть ошибка, показываем сообщение об ошибке
+  if (connectionStatus === 'error' && !isConnected) {
+    return (
+      <div className="voice-chat">
+        <div className="voice-chat-header">
+          <h3 className="voice-chat-title">🎙️ Голосовой чат</h3>
+          <div className="voice-chat-status">
+            <div className="status-indicator error">Ошибка</div>
+          </div>
+        </div>
+
+        <div className="error-state">
+          <div className="error-icon">⚠️</div>
+          <div className="error-content">
+            <h4>Не удалось подключиться</h4>
+            <p>{errorMessage}</p>
+            <div className="error-actions">
+              <button className="retry-button" onClick={initializeVoiceChat}>
+                🔄 Попробовать снова
+              </button>
+              <button className="demo-button" onClick={enableDemoMode}>
+                🎭 Включить демо-режим
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Основной интерфейс
   return (
     <div className="voice-chat">
       <div className="voice-chat-header">
         <h3 className="voice-chat-title">🎙️ Голосовой чат</h3>
         <div className="voice-chat-status">
           <div className={`status-indicator ${connectionStatus}`}>
-            {getConnectionStatusText()}
+            {connectionStatus === 'connected' ? 'Подключен' : 
+             connectionStatus === 'connecting' ? 'Подключается...' : 
+             connectionStatus === 'error' ? 'Ошибка' : 'Отключен'}
           </div>
         </div>
       </div>
@@ -226,23 +237,24 @@ const VoiceChat = () => {
           >
             {connectionStatus === 'connecting' ? '🔄 Подключение...' : '🎧 Подключиться'}
           </button>
+          
+          <div className="demo-fallback">
+            <button className="demo-fallback-button" onClick={enableDemoMode}>
+              🎭 Протестировать интерфейс (демо)
+            </button>
+          </div>
         </div>
       ) : (
+        // ... остальной код интерфейса без изменений
         <div className="voice-chat-active">
           <div className="room-info">
             <div className="room-id">
               <span>ID комнаты: <strong>{roomId}</strong></span>
-              <button 
-                className="copy-button"
-                onClick={copyRoomLink}
-              >
+              <button className="copy-button">
                 📋 Копировать
               </button>
             </div>
-            <button 
-              className="invite-button"
-              onClick={invitePlayer}
-            >
+            <button className="invite-button">
               ➕ Пригласить игрока
             </button>
           </div>
@@ -303,17 +315,6 @@ const VoiceChat = () => {
           </div>
         </div>
       )}
-
-      {/* Информация о возможностях */}
-      <div className="voice-features-info">
-        <h4>Технологии:</h4>
-        <ul>
-          <li>⚡ WebRTC - прямое P2P соединение</li>
-          <li>🔒 Сквозное шифрование</li>
-          <li>🎯 Задержка менее 100мс</li>
-          <li>🌐 Работает в любом современном браузере</li>
-        </ul>
-      </div>
     </div>
   );
 };

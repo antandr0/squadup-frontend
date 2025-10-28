@@ -1,14 +1,13 @@
 class WebRTCManager {
   constructor() {
     this.localStream = null;
-    this.peerConnections = new Map(); // connectionId -> RTCPeerConnection
-    this.remoteStreams = new Map(); // userId -> MediaStream
+    this.peerConnections = new Map();
+    this.remoteStreams = new Map();
     this.ws = null;
     this.connectionId = null;
     this.roomId = null;
     this.userId = null;
     
-    // STUN серверы (бесплатные)
     this.rtcConfig = {
       iceServers: [
         { urls: 'stun:stun.l.google.com:19302' },
@@ -16,19 +15,66 @@ class WebRTCManager {
         { urls: 'stun:stun2.l.google.com:19302' }
       ]
     };
+
+    // Добавляем таймаут для WebSocket
+    this.connectionTimeout = 10000; // 10 секунд
   }
 
-  // Подключение к Signaling Server
-  connectToSignalingServer(roomId, userId, nickname, onMessage) {
-    return new Promise((resolve, reject) => {
+  // Улучшенное подключение к Signaling Server с fallback
+  async connectToSignalingServer(roomId, userId, nickname, onMessage) {
+    return new Promise(async (resolve, reject) => {
       try {
-        // WebSocket подключение к signaling server
-        this.ws = new WebSocket('ws://localhost:8080');
+        // Пробуем разные адреса signaling server
+        const signalingServers = [
+          'wss://squadup-backend-03vr.onrender.com', // Production WebSocket
+          'ws://localhost:8080', // Local development
+          `ws://${window.location.hostname}:8080` // Same host
+        ];
+
+        let connectionError = null;
+
+        for (const serverUrl of signalingServers) {
+          try {
+            console.log(`🔄 Trying to connect to: ${serverUrl}`);
+            await this.tryConnectToServer(serverUrl, roomId, userId, nickname, onMessage);
+            console.log(`✅ Connected to: ${serverUrl}`);
+            resolve();
+            return;
+          } catch (error) {
+            connectionError = error;
+            console.warn(`❌ Failed to connect to ${serverUrl}:`, error.message);
+            continue;
+          }
+        }
+
+        // Если все серверы недоступны
+        reject(new Error(`Не удалось подключиться к серверу голосового чата. Все серверы недоступны.`));
+
+      } catch (error) {
+        console.error('Connection failed:', error);
+        reject(new Error(`Ошибка подключения: ${error.message || 'Неизвестная ошибка'}`));
+      }
+    });
+  }
+
+  // Попытка подключения к конкретному серверу
+  tryConnectToServer(serverUrl, roomId, userId, nickname, onMessage) {
+    return new Promise((resolve, reject) => {
+      const timeoutId = setTimeout(() => {
+        reject(new Error('Таймаут подключения'));
+        if (this.ws) {
+          this.ws.close();
+        }
+      }, this.connectionTimeout);
+
+      try {
+        this.ws = new WebSocket(serverUrl);
         this.roomId = roomId;
         this.userId = userId;
 
         this.ws.onopen = () => {
-          console.log('✅ Connected to signaling server');
+          clearTimeout(timeoutId);
+          console.log('✅ WebSocket connected');
           resolve();
         };
 
@@ -42,41 +88,43 @@ class WebRTCManager {
         };
 
         this.ws.onerror = (error) => {
+          clearTimeout(timeoutId);
           console.error('WebSocket error:', error);
-          reject(error);
+          reject(new Error('Ошибка WebSocket соединения'));
         };
 
-        this.ws.onclose = () => {
-          console.log('❌ Disconnected from signaling server');
-          this.cleanup();
+        this.ws.onclose = (event) => {
+          clearTimeout(timeoutId);
+          console.log('WebSocket closed:', event.code, event.reason);
+          if (event.code !== 1000) {
+            reject(new Error(`Соединение закрыто: ${event.reason || 'Код ' + event.code}`));
+          }
         };
 
       } catch (error) {
+        clearTimeout(timeoutId);
         reject(error);
       }
     });
   }
 
-  // Обработка сообщений от signaling server
+  // Остальные методы остаются без изменений
   handleSignalingMessage(message, onMessage) {
     console.log('📨 Signaling message:', message.type);
 
     switch (message.type) {
       case 'welcome':
         this.connectionId = message.connectionId;
-        // Присоединяемся к комнате после получения connectionId
         this.joinRoom(this.userId, this.roomId, onMessage.userNickname);
         break;
 
       case 'room-joined':
         onMessage.onRoomJoined?.(message.users);
-        // Начинаем устанавливать WebRTC соединения с другими пользователями
         this.createPeerConnections(message.users);
         break;
 
       case 'user-joined':
         onMessage.onUserJoined?.(message.user);
-        // Создаем peer connection для нового пользователя
         this.createPeerConnectionForUser(message.user);
         break;
 
@@ -110,7 +158,6 @@ class WebRTCManager {
     }
   }
 
-  // Присоединение к комнате
   joinRoom(userId, roomId, nickname) {
     this.sendToSignaling({
       type: 'join-room',
@@ -122,7 +169,6 @@ class WebRTCManager {
     });
   }
 
-  // Выход из комнаты
   leaveRoom() {
     if (this.roomId) {
       this.sendToSignaling({
@@ -133,34 +179,27 @@ class WebRTCManager {
     this.cleanup();
   }
 
-  // Создание peer connections для всех пользователей в комнате
   async createPeerConnections(users) {
     for (const user of users) {
-      // Пропускаем себя
       if (user.userId === this.userId) continue;
-      
       await this.createPeerConnectionForUser(user);
     }
   }
 
-  // Создание peer connection для конкретного пользователя
   async createPeerConnectionForUser(user) {
     if (this.peerConnections.has(user.userId)) {
-      console.log(`Peer connection already exists for user: ${user.userId}`);
       return;
     }
 
     try {
       const peerConnection = new RTCPeerConnection(this.rtcConfig);
       
-      // Добавляем локальный поток если он есть
       if (this.localStream) {
         this.localStream.getTracks().forEach(track => {
           peerConnection.addTrack(track, this.localStream);
         });
       }
 
-      // Обработка ICE candidates
       peerConnection.onicecandidate = (event) => {
         if (event.candidate) {
           this.sendToSignaling({
@@ -174,33 +213,21 @@ class WebRTCManager {
         }
       };
 
-      // Обработка входящих потоков
       peerConnection.ontrack = (event) => {
         console.log('📞 Received remote stream from:', user.userId);
         const remoteStream = event.streams[0];
         this.remoteStreams.set(user.userId, remoteStream);
         
-        // Уведомляем UI о новом потоке
         if (this.onRemoteStream) {
           this.onRemoteStream(user.userId, remoteStream);
         }
       };
 
-      // Обработка изменения состояния соединения
       peerConnection.onconnectionstatechange = () => {
         console.log(`Connection state for ${user.userId}:`, peerConnection.connectionState);
-        
-        if (peerConnection.connectionState === 'connected') {
-          console.log(`✅ WebRTC connected with ${user.userId}`);
-        } else if (peerConnection.connectionState === 'failed' || 
-                   peerConnection.connectionState === 'disconnected') {
-          console.log(`❌ WebRTC disconnected from ${user.userId}`);
-        }
       };
 
       this.peerConnections.set(user.userId, peerConnection);
-
-      // Создаем offer для установки соединения
       await this.createOffer(peerConnection, user.connectionId);
 
     } catch (error) {
@@ -208,7 +235,6 @@ class WebRTCManager {
     }
   }
 
-  // Создание и отправка offer
   async createOffer(peerConnection, targetConnectionId) {
     try {
       const offer = await peerConnection.createOffer();
@@ -227,19 +253,16 @@ class WebRTCManager {
     }
   }
 
-  // Обработка входящего offer
   async handleOffer(offer, fromConnectionId) {
     try {
       const peerConnection = new RTCPeerConnection(this.rtcConfig);
       
-      // Добавляем локальный поток
       if (this.localStream) {
         this.localStream.getTracks().forEach(track => {
           peerConnection.addTrack(track, this.localStream);
         });
       }
 
-      // Обработка ICE candidates
       peerConnection.onicecandidate = (event) => {
         if (event.candidate) {
           this.sendToSignaling({
@@ -253,10 +276,8 @@ class WebRTCManager {
         }
       };
 
-      // Обработка входящих потоков
       peerConnection.ontrack = (event) => {
         const remoteStream = event.streams[0];
-        // Находим userId по connectionId (в реальном приложении нужен mapping)
         const userId = this.findUserIdByConnectionId(fromConnectionId);
         if (userId) {
           this.remoteStreams.set(userId, remoteStream);
@@ -279,7 +300,6 @@ class WebRTCManager {
         }
       });
 
-      // Сохраняем peer connection
       const userId = this.findUserIdByConnectionId(fromConnectionId);
       if (userId) {
         this.peerConnections.set(userId, peerConnection);
@@ -290,7 +310,6 @@ class WebRTCManager {
     }
   }
 
-  // Обработка входящего answer
   async handleAnswer(answer, fromConnectionId) {
     try {
       const userId = this.findUserIdByConnectionId(fromConnectionId);
@@ -304,7 +323,6 @@ class WebRTCManager {
     }
   }
 
-  // Обработка ICE candidate
   async handleICECandidate(candidate, fromConnectionId) {
     try {
       const userId = this.findUserIdByConnectionId(fromConnectionId);
@@ -318,9 +336,13 @@ class WebRTCManager {
     }
   }
 
-  // Получение локального аудио потока
   async getLocalAudioStream() {
     try {
+      // Проверяем поддержку getUserMedia
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('Ваш браузер не поддерживает доступ к микрофону');
+      }
+
       this.localStream = await navigator.mediaDevices.getUserMedia({
         audio: {
           echoCancellation: true,
@@ -332,11 +354,20 @@ class WebRTCManager {
       return this.localStream;
     } catch (error) {
       console.error('Error accessing microphone:', error);
-      throw error;
+      
+      // Преобразуем стандартные ошибки в понятные сообщения
+      if (error.name === 'NotAllowedError') {
+        throw new Error('Доступ к микрофону запрещен. Разрешите доступ в настройках браузера.');
+      } else if (error.name === 'NotFoundError') {
+        throw new Error('Микрофон не найден. Убедитесь что микрофон подключен и доступен.');
+      } else if (error.name === 'NotSupportedError') {
+        throw new Error('Ваш браузер не поддерживает аудио захват.');
+      } else {
+        throw new Error(`Не удалось получить доступ к микрофону: ${error.message}`);
+      }
     }
   }
 
-  // Mute/unmute локального микрофона
   toggleMute(isMuted) {
     if (this.localStream) {
       const audioTracks = this.localStream.getAudioTracks();
@@ -344,7 +375,6 @@ class WebRTCManager {
         track.enabled = !isMuted;
       });
 
-      // Уведомляем сервер об изменении статуса mute
       this.sendToSignaling({
         type: 'mute-audio',
         roomId: this.roomId,
@@ -353,7 +383,6 @@ class WebRTCManager {
     }
   }
 
-  // Отправка сообщения на signaling server
   sendToSignaling(message) {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(message));
@@ -362,10 +391,7 @@ class WebRTCManager {
     }
   }
 
-  // Вспомогательные методы
   findUserIdByConnectionId(connectionId) {
-    // В реальном приложении нужно хранить mapping connectionId -> userId
-    // Пока возвращаем connectionId как временное решение
     return connectionId;
   }
 
@@ -378,22 +404,18 @@ class WebRTCManager {
     this.remoteStreams.delete(userId);
   }
 
-  // Очистка ресурсов
   cleanup() {
-    // Закрываем все peer connections
     this.peerConnections.forEach((pc, userId) => {
       pc.close();
     });
     this.peerConnections.clear();
     this.remoteStreams.clear();
 
-    // Останавливаем локальный поток
     if (this.localStream) {
       this.localStream.getTracks().forEach(track => track.stop());
       this.localStream = null;
     }
 
-    // Закрываем WebSocket соединение
     if (this.ws) {
       this.ws.close();
       this.ws = null;

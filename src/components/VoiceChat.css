@@ -401,3 +401,97 @@
     padding: 4px 8px;
   }
 }
+
+/* Стили для состояния ошибки */
+.error-state {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.error-icon {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.error-content h4 {
+  color: #ff6b6b;
+  margin-bottom: 10px;
+  font-size: 1.3rem;
+}
+
+.error-content p {
+  color: #b0b0d0;
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+.error-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.retry-button, .demo-button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.retry-button {
+  background: linear-gradient(45deg, #4e54c8, #8a2be2);
+  color: white;
+}
+
+.retry-button:hover {
+  transform: translateY(-2px);
+}
+
+.demo-button {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.demo-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Демо fallback */
+.demo-fallback {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.demo-fallback-button {
+  background: rgba(255, 193, 7, 0.1);
+  color: #ffc107;
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.demo-fallback-button:hover {
+  background: rgba(255, 193, 7, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Демо предупреждение */
+.demo-warning {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  color: #ffc107;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 15px 0;
+  text-align: center;
+  font-weight: 600;
+}
