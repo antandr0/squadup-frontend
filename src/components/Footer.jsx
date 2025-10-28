@@ -13,28 +13,30 @@ const Footer = () => {
           <div className="footer-column">
             <div className="footer-section">
               <h3 className="footer-title">🎮 О SquadUp</h3>
-              <p className="footer-description">
-                Современная платформа для поиска тиммейтов и создания игровых команд. 
-                Объединяем геймеров со всей России для совместных побед!
-              </p>
-            </div>
-            
-            <div className="features-grid">
-              <div className="feature-item">
-                <span className="feature-icon">🎯</span>
-                <span className="feature-text">Умный подбор по стилю игры</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">🌍</span>
-                <span className="feature-text">Геопоиск игроков рядом</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">⭐</span>
-                <span className="feature-text">Система рейтингов и отзывов</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">🎙️</span>
-                <span className="feature-text">Встроенный голосовой чат</span>
+              <div className="footer-content">
+                <p className="footer-description">
+                  Современная платформа для поиска тиммейтов и создания игровых команд. 
+                  Объединяем геймеров со всей России для совместных побед!
+                </p>
+                
+                <div className="features-grid">
+                  <div className="feature-item">
+                    <span className="feature-icon">🎯</span>
+                    <span className="feature-text">Умный подбор по стилю игры</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">🌍</span>
+                    <span className="feature-text">Геопоиск игроков рядом</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">⭐</span>
+                    <span className="feature-text">Система рейтингов и отзывов</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">🎙️</span>
+                    <span className="feature-text">Встроенный голосовой чат</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -43,23 +45,25 @@ const Footer = () => {
           <div className="footer-column">
             <div className="footer-section">
               <h3 className="footer-title">📋 Правовая информация</h3>
-              <div className="legal-links">
-                <a href="/privacy" className="legal-link">
-                  <span className="legal-icon">🔒</span>
-                  Политика конфиденциальности
-                </a>
-                <a href="/terms" className="legal-link">
-                  <span className="legal-icon">📄</span>
-                  Пользовательское соглашение
-                </a>
-                <a href="/cookies" className="legal-link">
-                  <span className="legal-icon">🍪</span>
-                  Политика cookies
-                </a>
-                <a href="/offer" className="legal-link">
-                  <span className="legal-icon">📝</span>
-                  Оферта
-                </a>
+              <div className="footer-content">
+                <div className="legal-links">
+                  <a href="/privacy" className="legal-link">
+                    <span className="legal-icon">🔒</span>
+                    Политика конфиденциальности
+                  </a>
+                  <a href="/terms" className="legal-link">
+                    <span className="legal-icon">📄</span>
+                    Пользовательское соглашение
+                  </a>
+                  <a href="/cookies" className="legal-link">
+                    <span className="legal-icon">🍪</span>
+                    Политика cookies
+                  </a>
+                  <a href="/offer" className="legal-link">
+                    <span className="legal-icon">📝</span>
+                    Оферта
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -68,41 +72,43 @@ const Footer = () => {
           <div className="footer-column">
             <div className="footer-section">
               <h3 className="footer-title">📞 Контакты</h3>
-              <div className="contact-buttons">
-                <a 
-                  href="mailto:redspicez@yandex.ru" 
-                  className="contact-button"
-                >
-                  <span className="contact-icon">📧</span>
-                  Email: redspicez@yandex.ru
-                </a>
-                <a 
-                  href="https://t.me/aaaaandreevich" 
-                  className="contact-button"
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
-                  <span className="contact-icon">💬</span>
-                  Telegram: @aaaaandreevich
-                </a>
-                <a 
-                  href="https://steamcommunity.com/id/AntAndr" 
-                  className="contact-button"
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
-                  <span className="contact-icon">🎮</span>
-                  Steam: AntAndr
-                </a>
-                <a 
-                  href="https://squadup-frontend.vercel.app" 
-                  className="contact-button"
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
-                  <span className="contact-icon">🌐</span>
-                  Сайт: squadup-frontend.vercel.app
-                </a>
+              <div className="footer-content">
+                <div className="contact-buttons">
+                  <a 
+                    href="mailto:redspicez@yandex.ru" 
+                    className="contact-button"
+                  >
+                    <span className="contact-icon">📧</span>
+                    Email: redspicez@yandex.ru
+                  </a>
+                  <a 
+                    href="https://t.me/aaaaandreevich" 
+                    className="contact-button"
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    <span className="contact-icon">💬</span>
+                    Telegram: @aaaaandreevich
+                  </a>
+                  <a 
+                    href="https://steamcommunity.com/id/AntAndr" 
+                    className="contact-button"
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    <span className="contact-icon">🎮</span>
+                    Steam: AntAndr
+                  </a>
+                  <a 
+                    href="https://squadup-frontend.vercel.app" 
+                    className="contact-button"
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    <span className="contact-icon">🌐</span>
+                    Сайт: squadup-frontend.vercel.app
+                  </a>
+                </div>
               </div>
             </div>
           </div>

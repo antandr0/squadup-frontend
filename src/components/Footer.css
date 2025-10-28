@@ -25,6 +25,7 @@
   z-index: 1;
 }
 
+/* Идеальная сетка */
 .footer-grid {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
@@ -36,42 +37,48 @@
 .footer-column {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  min-height: 400px; /* Фиксированная высота для выравнивания */
 }
 
 .footer-section {
-  margin-bottom: 0;
-  height: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
 
+/* Заголовки - одинаковые */
 .footer-title {
   font-size: 1.3rem;
   font-weight: bold;
   background: linear-gradient(45deg, #4e54c8, #8a2be2);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin: 0 0 20px 0;
+  margin: 0 0 25px 0;
   font-family: 'Arial', sans-serif;
-  min-height: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
 }
 
+/* Контент колонок - равномерно распределен */
+.footer-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Первая колонка - описание + фичи */
 .footer-description {
   color: #b0b0d0;
   font-size: 1rem;
   line-height: 1.6;
-  margin: 0 0 25px 0;
-  flex: 1;
+  margin: 0 0 30px 0;
 }
 
-/* Стили для фичей */
 .features-grid {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 15px;
   flex: 1;
 }
 
@@ -79,9 +86,9 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 0;
+  padding: 12px 0;
   transition: all 0.3s ease;
-  min-height: 40px;
+  min-height: 24px;
 }
 
 .feature-item:hover {
@@ -89,39 +96,40 @@
 }
 
 .feature-icon {
-  font-size: 1.2rem;
+  font-size: 1.4rem; /* Увеличили иконки */
   flex-shrink: 0;
-  width: 24px;
+  width: 28px; /* Увеличили ширину для больших иконок */
   text-align: center;
 }
 
 .feature-text {
   color: #b0b0d0;
-  font-size: 0.95rem;
-  line-height: 1.4;
+  font-size: 1.05rem; /* Увеличили шрифт текста */
+  line-height: 1.5;
+  font-weight: 500; /* Сделали немного жирнее */
 }
 
-/* Стили для правовых ссылок */
+/* Вторая колонка - правовые ссылки */
 .legal-links {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   flex: 1;
 }
 
 .legal-link {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   color: #b0b0d0;
   text-decoration: none;
   font-size: 0.95rem;
   transition: all 0.3s ease;
-  padding: 12px 16px;
+  padding: 14px 16px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  min-height: 48px;
+  min-height: 52px;
   box-sizing: border-box;
 }
 
@@ -133,32 +141,32 @@
 }
 
 .legal-icon {
-  font-size: 1rem;
-  width: 20px;
+  font-size: 1.1rem; /* Немного увеличили иконки */
+  width: 22px;
   text-align: center;
 }
 
-/* Стили для контактов как кнопок */
+/* Третья колонка - контакты */
 .contact-buttons {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   flex: 1;
 }
 
 .contact-button {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   color: #b0b0d0;
   text-decoration: none;
   font-size: 0.95rem;
   transition: all 0.3s ease;
-  padding: 12px 16px;
+  padding: 14px 16px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  min-height: 48px;
+  min-height: 52px;
   box-sizing: border-box;
 }
 
@@ -171,8 +179,8 @@
 }
 
 .contact-icon {
-  font-size: 1.1rem;
-  width: 20px;
+  font-size: 1.2rem; /* Немного увеличили иконки */
+  width: 22px;
   text-align: center;
 }
 
@@ -210,10 +218,11 @@
   
   .footer-column:first-child {
     grid-column: 1 / -1;
+    min-height: auto;
   }
   
-  .footer-section {
-    min-height: auto;
+  .footer-column {
+    min-height: 350px;
   }
 }
 
@@ -228,21 +237,27 @@
     gap: 30px;
   }
   
+  .footer-column {
+    min-height: auto;
+  }
+  
   .features-grid,
   .legal-links,
   .contact-buttons {
     align-items: stretch;
   }
   
-  .feature-item,
-  .legal-link,
-  .contact-button {
-    justify-content: flex-start;
+  .footer-title {
+    height: auto;
+    margin-bottom: 20px;
   }
   
-  .footer-title {
-    min-height: auto;
-    margin-bottom: 15px;
+  .feature-text {
+    font-size: 1rem; /* Немного меньше на мобильных */
+  }
+  
+  .feature-icon {
+    font-size: 1.3rem;
   }
 }
 
@@ -259,16 +274,20 @@
     font-size: 0.9rem;
   }
   
-  .feature-text,
-  .legal-link,
-  .contact-button {
-    font-size: 0.9rem;
+  .feature-text {
+    font-size: 0.95rem;
   }
   
   .legal-link,
   .contact-button {
-    padding: 10px 12px;
-    min-height: 44px;
+    font-size: 0.9rem;
+    padding: 12px 14px;
+    min-height: 48px;
+  }
+  
+  .feature-icon {
+    font-size: 1.2rem;
+    width: 24px;
   }
 }
 
@@ -294,26 +313,4 @@
 
 .footer-column:nth-child(3) {
   animation-delay: 0.2s;
-}
-
-/* Выравнивание по сетке */
-.footer-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  grid-template-rows: auto;
-  gap: 40px;
-  align-items: start;
-}
-
-.footer-column {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  gap: 20px;
-  height: fit-content;
-}
-
-.footer-section {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  gap: 20px;
 }
