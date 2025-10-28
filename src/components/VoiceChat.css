@@ -352,3 +352,52 @@
     font-size: 1rem;
   }
 }
+
+/* Дополнительные статусы подключения */
+.status-indicator.connecting {
+  background: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+  border: 1px solid rgba(255, 193, 7, 0.4);
+  animation: pulse 1.5s infinite;
+}
+
+.status-indicator.error {
+  background: rgba(255, 107, 107, 0.3);
+  color: #ff6b6b;
+  border: 1px solid rgba(255, 107, 107, 0.5);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Подсветка возможностей */
+.feature-highlights {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 15px 0;
+  flex-wrap: wrap;
+}
+
+.feature-highlights span {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  color: #b0b0d0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 768px) {
+  .feature-highlights {
+    gap: 8px;
+  }
+  
+  .feature-highlights span {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+}
