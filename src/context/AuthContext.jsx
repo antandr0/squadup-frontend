@@ -1,12 +1,11 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import { apiService } from '../services/api';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const AuthContext = createContext();
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth должен использоваться внутри AuthProvider');
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };
@@ -14,62 +13,58 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isDemoMode, setIsDemoMode] = useState(false);
 
-  // Проверяем авторизацию при загрузке
+  // Проверяем наличие токена при загрузке приложения
   useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
     const token = localStorage.getItem('token');
-    if (!token) {
-      setLoading(false);
-      return;
+    const userData = localStorage.getItem('user');
+    
+    if (token && userData) {
+      try {
+        setUser(JSON.parse(userData));
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      }
     }
-
-    try {
-      // Пытаемся получить данные пользователя
-      // Если бэкенд не поддерживает /api/auth/me, используем демо-данные
-      const demoUser = {
-        id: "1",
-        email: "user@example.com",
-        profile: {
-          nickname: "Игрок",
-          overallRating: 4.5,
-          playMode: "both",
-          age: 25,
-          aboutMe: "Добро пожаловать в SquadUp!",
-          games: ["Dota 2", "CS:GO"],
-          location: "Москва",
-          totalReviews: 0
-        }
-      };
-      setUser(demoUser);
-      setIsDemoMode(true);
-    } catch (error) {
-      console.error('Ошибка проверки авторизации:', error);
-      logout();
-    } finally {
-      setLoading(false);
-    }
-  };
+    setLoading(false);
+  }, []);
 
   const login = async (email, password) => {
     try {
       setLoading(true);
-      const result = await apiService.login(email, password);
+      console.log('Attempting login with:', { email, password });
       
-      if (result.success && result.user) {
-        setUser(result.user);
-        setIsDemoMode(apiService.isDemoMode);
-        return { success: true, user: result.user };
+      const response = await fetch('https://squadup-backend-03vr.onrender.com/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      console.log('Login response:', data);
+      
+      if (data.success && data.user) {
+        setUser(data.user);
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+        }
+        return { success: true };
+      } else {
+        return { 
+          success: false, 
+          error: data.error || data.message || 'Login failed' 
+        };
       }
-      return { success: false, error: result.error || 'Ошибка авторизации' };
     } catch (error) {
+      console.error('Login error:', error);
       return { 
         success: false, 
-        error: error.message || 'Ошибка авторизации'
+        error: 'Network error. Please try again.' 
       };
     } finally {
       setLoading(false);
@@ -79,18 +74,37 @@ export const AuthProvider = ({ children }) => {
   const register = async (email, password, nickname) => {
     try {
       setLoading(true);
-      const result = await apiService.register(email, password, nickname);
+      console.log('Attempting registration with:', { email, password, nickname });
       
-      if (result.success && result.user) {
-        setUser(result.user);
-        setIsDemoMode(apiService.isDemoMode);
-        return { success: true, user: result.user };
+      const response = await fetch('https://squadup-backend-03vr.onrender.com/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password, nickname }),
+      });
+
+      const data = await response.json();
+      console.log('Registration response:', data);
+      
+      if (data.success && data.user) {
+        setUser(data.user);
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+        }
+        return { success: true };
+      } else {
+        return { 
+          success: false, 
+          error: data.error || data.message || 'Registration failed' 
+        };
       }
-      return { success: false, error: result.error || 'Ошибка регистрации' };
     } catch (error) {
-      return {
-        success: false,
-        error: error.message || 'Ошибка регистрации'
+      console.error('Registration error:', error);
+      return { 
+        success: false, 
+        error: 'Network error. Please try again.' 
       };
     } finally {
       setLoading(false);
@@ -98,17 +112,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
     setUser(null);
-    setIsDemoMode(false);
-  };
-
-  const updateUserProfile = (profileData) => {
-    const updatedUser = {
-      ...user,
-      profile: { ...user.profile, ...profileData }
-    };
-    setUser(updatedUser);
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
   };
 
   const value = {
@@ -116,9 +122,7 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
-    loading,
-    isDemoMode,
-    updateUserProfile
+    loading
   };
 
   return (
@@ -127,3 +131,5 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+export default AuthContext;

@@ -1,124 +1,73 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import './Navigation.css';
 
 const Navigation = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, logout } = useAuth();
-
-  const handleHomeClick = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleProfileClick = () => {
-    alert('🎮 Демо-режим: Профиль пользователя\n\nВ реальной версии здесь будет страница профиля с настройками, историей игр и рейтингом!');
-  };
 
   const handleLogout = () => {
     logout();
+    setIsMenuOpen(false);
   };
 
   return (
-    <nav style={{
-      position: 'fixed',
-      top: 0,
-      width: '100%',
-      background: 'rgba(15, 15, 35, 0.95)',
-      backdropFilter: 'blur(10px)',
-      zIndex: 1000,
-      padding: '15px 0',
-      borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
-    }}>
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        padding: '0 20px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
-        {/* Логотип */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-          <button 
-            onClick={handleHomeClick}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              color: 'white',
-              fontSize: '16px',
-              padding: '8px 16px',
-              borderRadius: '25px'
-            }}
-          >
-            <span style={{
-              fontSize: '20px',
-              fontWeight: 'bold',
-              background: 'linear-gradient(45deg, #4e54c8, #8a2be2)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
-            }}>
-              SquadUp
-            </span>
-          </button>
+    <nav className="navbar">
+      <div className="nav-container">
+        {/* Логотип - всегда ведет на главную */}
+        <a href="/" className="nav-logo">
+          SquadUp
+        </a>
 
-          {user && (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              background: 'rgba(78, 84, 200, 0.2)',
-              padding: '5px 15px',
-              borderRadius: '20px',
-              border: '1px solid rgba(78, 84, 200, 0.3)'
-            }}>
-              <span style={{ fontSize: '14px', color: '#b0b0d0' }}>Играет:</span>
-              <span style={{ fontWeight: 'bold', color: 'white' }}>
-                {user.profile?.nickname || user.email}
+        {/* Десктопное меню */}
+        <div className="nav-menu">
+          <a href="#features" className="nav-link">Возможности</a>
+          <a href="#success" className="nav-link">Истории успеха</a>
+          <a href="#demo" className="nav-link">Демо</a>
+          
+          {user ? (
+            <div className="user-menu">
+              <span className="user-info">
+                Играет: {user.nickname || user.email}
               </span>
+              <button onClick={handleLogout} className="logout-button">
+                Выйти
+              </button>
+            </div>
+          ) : (
+            <div className="auth-buttons">
+              <a href="#demo" className="nav-link">Попробовать</a>
             </div>
           )}
         </div>
 
-        {/* Правая часть навигации - ТОЛЬКО АВТОРИЗАЦИЯ */}
-        <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-          {user ? (
-            <>
-              <button 
-                onClick={handleProfileClick}
-                style={{
-                  background: 'rgba(0, 255, 136, 0.2)',
-                  color: '#00ff88',
-                  border: '1px solid rgba(0, 255, 136, 0.3)',
-                  padding: '8px 16px',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontSize: '14px'
-                }}
-              >
-                📊 Мой профиль
-              </button>
-
-              <button
-                onClick={handleLogout}
-                style={{
-                  background: 'rgba(255, 107, 107, 0.2)',
-                  color: '#ff6b6b',
-                  border: '1px solid rgba(255, 107, 107, 0.3)',
-                  padding: '8px 16px',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontSize: '14px'
-                }}
-              >
-                🚪 Выйти
-              </button>
-            </>
-          ) : (
-            // Пусто - все ссылки перенесены в футер
-            <div style={{ color: '#b0b0d0', fontSize: '0.9rem' }}>
-              Присоединяйся к сообществу
+        {/* Мобильное меню */}
+        <div className="mobile-menu">
+          <button 
+            className="menu-toggle"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            ☰
+          </button>
+          
+          {isMenuOpen && (
+            <div className="mobile-nav-menu">
+              <a href="#features" className="mobile-nav-link">Возможности</a>
+              <a href="#success" className="mobile-nav-link">Истории успеха</a>
+              <a href="#demo" className="mobile-nav-link">Демо</a>
+              
+              {user ? (
+                <>
+                  <span className="mobile-user-info">
+                    Играет: {user.nickname || user.email}
+                  </span>
+                  <button onClick={handleLogout} className="mobile-logout-button">
+                    Выйти
+                  </button>
+                </>
+              ) : (
+                <a href="#demo" className="mobile-nav-link">Попробовать</a>
+              )}
             </div>
           )}
         </div>
