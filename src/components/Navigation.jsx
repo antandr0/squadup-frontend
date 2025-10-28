@@ -37,7 +37,7 @@ const Navigation = ({ onLogoClick, onLogout, onDashboardClick }) => {
   return (
     <nav className="navbar">
       <div className="nav-container">
-        {/* Логотип - всегда ведет на главную без разлогина */}
+        {/* Логотип */}
         <a 
           href="/" 
           className="nav-logo"
@@ -46,11 +46,15 @@ const Navigation = ({ onLogoClick, onLogout, onDashboardClick }) => {
           SquadUp
         </a>
 
+        {/* Анимированная золотая надпись */}
+        <div className="animated-slogan">
+          <span className="slogan-text">Find your best team</span>
+        </div>
+
         {/* Десктопное меню */}
         <div className="nav-menu">
           <a href="#features" className="nav-link">Возможности</a>
           <a href="#success" className="nav-link">Истории успеха</a>
-          {/* Кнопка Демо удалена */}
           
           {user ? (
             <div 
@@ -85,7 +89,6 @@ const Navigation = ({ onLogoClick, onLogout, onDashboardClick }) => {
             <div className="mobile-nav-menu">
               <a href="#features" className="mobile-nav-link">Возможности</a>
               <a href="#success" className="mobile-nav-link">Истории успеха</a>
-              {/* Кнопка Демо удалена из мобильного меню */}
               
               {user ? (
                 <>
