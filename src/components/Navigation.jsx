@@ -2,25 +2,41 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import './Navigation.css';
 
-const Navigation = () => {
+const Navigation = ({ onLogoClick, onLogout }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, logout } = useAuth();
 
   const handleLogout = () => {
     logout();
     setIsMenuOpen(false);
+    if (onLogout) {
+      onLogout();
+    }
+  };
+
+  const handleLogoClick = (e) => {
+    e.preventDefault();
+    if (onLogoClick) {
+      onLogoClick();
+    }
   };
 
   return (
     <nav className="navbar">
       <div className="nav-container">
-        {/* Логотип - всегда ведет на главную */}
-        <a href="/" className="nav-logo">
+        {/* Логотип - всегда ведет на главную без разлогина */}
+        <a 
+          href="/" 
+          className="nav-logo"
+          onClick={handleLogoClick}
+        >
           SquadUp
         </a>
 
         {/* Десктопное меню */}
         <div className="nav-menu">
+          <a href="#features" className="nav-link">Возможности</a>
+          <a href="#success" className="nav-link">Истории успеха</a>
           <a href="#demo" className="nav-link">Демо</a>
           
           {user ? (
@@ -50,6 +66,8 @@ const Navigation = () => {
           
           {isMenuOpen && (
             <div className="mobile-nav-menu">
+              <a href="#features" className="mobile-nav-link">Возможности</a>
+              <a href="#success" className="mobile-nav-link">Истории успеха</a>
               <a href="#demo" className="mobile-nav-link">Демо</a>
               
               {user ? (

@@ -15,6 +15,7 @@ import UserDashboard from './components/UserDashboard';
 const AppContent = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState('login');
+  const [currentView, setCurrentView] = useState('auto'); // 'auto', 'landing', 'dashboard'
   const { user } = useAuth();
 
   const handleOpenAuth = (mode = 'login') => {
@@ -25,7 +26,30 @@ const AppContent = () => {
   const handleAuthSuccess = (userData) => {
     console.log('Auth success:', userData);
     setIsAuthModalOpen(false);
+    setCurrentView('dashboard');
   };
+
+  const handleLogoClick = () => {
+    setCurrentView('landing');
+  };
+
+  const handleLogout = () => {
+    setCurrentView('auto');
+  };
+
+  // Определяем что показывать
+  const getCurrentView = () => {
+    if (currentView === 'landing') {
+      return 'landing';
+    }
+    if (currentView === 'dashboard') {
+      return 'dashboard';
+    }
+    // Автоматический выбор
+    return user ? 'dashboard' : 'landing';
+  };
+
+  const view = getCurrentView();
 
   return (
     <div style={{ 
@@ -33,9 +57,9 @@ const AppContent = () => {
       background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)',
       color: 'white'
     }}>
-      <Navigation />
+      <Navigation onLogoClick={handleLogoClick} onLogout={handleLogout} />
       
-      {user ? (
+      {view === 'dashboard' ? (
         <UserDashboard />
       ) : (
         <>
