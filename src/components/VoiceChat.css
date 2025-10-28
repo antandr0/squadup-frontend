@@ -495,3 +495,60 @@
   text-align: center;
   font-weight: 600;
 }
+
+/* Стили для отладочной информации */
+.server-info {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin: 15px 0;
+  font-size: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.server-info strong {
+  color: #4e54c8;
+}
+
+.debug-log {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  padding: 15px;
+  margin: 15px 0;
+  max-height: 200px;
+  overflow-y: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+}
+
+.debug-log h5 {
+  margin: 0 0 10px 0;
+  color: #ffc107;
+}
+
+.debug-line {
+  padding: 2px 0;
+  color: #b0b0d0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.debug-line:last-child {
+  border-bottom: none;
+}
+
+.debug-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.debug-section summary {
+  cursor: pointer;
+  color: #b0b0d0;
+  font-size: 0.9rem;
+  padding: 5px 0;
+}
+
+.debug-section details[open] summary {
+  color: #4e54c8;
+}

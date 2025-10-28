@@ -13,30 +13,24 @@ const VoiceChat = () => {
   const [connectionStatus, setConnectionStatus] = useState('disconnected');
   const [useDemoMode, setUseDemoMode] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [debugLog, setDebugLog] = useState([]);
   
   const webRTCManager = useRef(null);
-  const audioElements = useRef(new Map());
+
+  const addDebugLog = (message) => {
+    console.log('🔧 Debug:', message);
+    setDebugLog(prev => [...prev.slice(-9), `${new Date().toLocaleTimeString()}: ${message}`]);
+  };
 
   useEffect(() => {
     webRTCManager.current = new WebRTCManager();
+    addDebugLog('WebRTCManager инициализирован');
     
-    webRTCManager.current.onRemoteStream = (userId, stream) => {
-      console.log('🔊 Remote stream received for user:', userId);
-      const audio = new Audio();
-      audio.srcObject = stream;
-      audio.play().catch(e => console.error('Error playing audio:', e));
-      audioElements.current.set(userId, audio);
-    };
-
     return () => {
       if (webRTCManager.current) {
         webRTCManager.current.cleanup();
+        addDebugLog('WebRTCManager очищен');
       }
-      audioElements.current.forEach(audio => {
-        audio.pause();
-        audio.srcObject = null;
-      });
-      audioElements.current.clear();
     };
   }, []);
 
@@ -44,19 +38,24 @@ const VoiceChat = () => {
     try {
       setConnectionStatus('connecting');
       setErrorMessage('');
+      addDebugLog('Начинаем подключение к голосовому чату...');
       
+      addDebugLog('Запрашиваем доступ к микрофону...');
       await webRTCManager.current.getLocalAudioStream();
+      addDebugLog('✅ Доступ к микрофону получен');
       
-      const newRoomId = generateRoomId();
+      const newRoomId = `room-${user.id}-${Date.now()}`;
       setRoomId(newRoomId);
+      addDebugLog(`Создана комната: ${newRoomId}`);
       
+      addDebugLog('Подключаемся к WebSocket серверу...');
       await webRTCManager.current.connectToSignalingServer(
         newRoomId,
         user.id,
         user.nickname,
         {
           onRoomJoined: (users) => {
-            console.log('✅ Joined room with users:', users);
+            addDebugLog(`✅ Подключились к комнате, участников: ${users.length}`);
             setParticipants(users.map(u => ({
               ...u,
               isYou: u.userId === user.id,
@@ -68,11 +67,9 @@ const VoiceChat = () => {
           },
           
           onUserJoined: (newUser) => {
-            console.log('👤 User joined:', newUser);
+            addDebugLog(`👤 Новый участник: ${newUser.nickname}`);
             setParticipants(prev => {
-              if (prev.find(p => p.userId === newUser.userId)) {
-                return prev;
-              }
+              if (prev.find(p => p.userId === newUser.userId)) return prev;
               return [...prev, {
                 ...newUser,
                 isYou: newUser.userId === user.id,
@@ -83,18 +80,12 @@ const VoiceChat = () => {
           },
           
           onUserLeft: (userId) => {
-            console.log('👤 User left:', userId);
+            addDebugLog(`👤 Участник вышел: ${userId}`);
             setParticipants(prev => prev.filter(p => p.userId !== userId));
-            
-            const audio = audioElements.current.get(userId);
-            if (audio) {
-              audio.pause();
-              audio.srcObject = null;
-              audioElements.current.delete(userId);
-            }
           },
           
           onUserMuteUpdated: (userId, isMuted) => {
+            addDebugLog(`🔇 Участник ${userId} mute: ${isMuted}`);
             setParticipants(prev => 
               prev.map(p => 
                 p.userId === userId ? { ...p, isMuted } : p
@@ -102,80 +93,54 @@ const VoiceChat = () => {
             );
           },
           
-          onError: (errorMessage) => {
+          onError: (errorMsg) => {
+            addDebugLog(`❌ Ошибка: ${errorMsg}`);
             setConnectionStatus('error');
-            setErrorMessage(errorMessage);
-          },
-          
-          userNickname: user.nickname
+            setErrorMessage(errorMsg);
+          }
         }
       );
 
-    } catch (error) {
-      console.error('Error initializing voice chat:', error);
-      setConnectionStatus('error');
-      setErrorMessage(error.message || 'Неизвестная ошибка');
-    }
-  };
+      addDebugLog('✅ WebSocket подключен успешно');
 
-  const generateRoomId = () => {
-    return `room-${Math.random().toString(36).substr(2, 9)}`;
+    } catch (error) {
+      addDebugLog(`❌ Ошибка инициализации: ${error.message}`);
+      setConnectionStatus('error');
+      setErrorMessage(error.message);
+    }
   };
 
   const disconnectVoiceChat = () => {
+    addDebugLog('Отключаемся от голосового чата...');
     if (webRTCManager.current) {
       webRTCManager.current.leaveRoom();
     }
-    
     setIsConnected(false);
     setConnectionStatus('disconnected');
     setParticipants([]);
-    
-    audioElements.current.forEach(audio => {
-      audio.pause();
-      audio.srcObject = null;
-    });
-    audioElements.current.clear();
+    addDebugLog('✅ Отключены от голосового чата');
   };
 
   const toggleMute = () => {
     const newMutedState = !isMuted;
     setIsMuted(newMutedState);
+    addDebugLog(newMutedState ? '🔇 Микрофон выключен' : '🎤 Микрофон включен');
     
     if (webRTCManager.current) {
       webRTCManager.current.toggleMute(newMutedState);
     }
   };
 
-  const handleVolumeChange = (userId, volume) => {
-    setParticipants(prev => 
-      prev.map(p => 
-        p.userId === userId ? { ...p, volume } : p
-      )
-    );
-    
-    const audio = audioElements.current.get(userId);
-    if (audio) {
-      audio.volume = volume / 100;
-    }
-  };
-
   const enableDemoMode = () => {
+    addDebugLog('🔄 Включаем демо-режим');
     setUseDemoMode(true);
     setErrorMessage('');
   };
 
-  const disableDemoMode = () => {
-    setUseDemoMode(false);
-    setErrorMessage('');
-  };
-
-  // Если включен демо-режим, показываем демо компонент
   if (useDemoMode) {
     return <DemoVoiceChat />;
   }
 
-  // Если есть ошибка, показываем сообщение об ошибке
   if (connectionStatus === 'error' && !isConnected) {
     return (
       <div className="voice-chat">
@@ -191,12 +156,20 @@ const VoiceChat = () => {
           <div className="error-content">
             <h4>Не удалось подключиться</h4>
             <p>{errorMessage}</p>
+            
+            <div className="debug-log">
+              <h5>Лог отладки:</h5>
+              {debugLog.map((log, index) => (
+                <div key={index} className="debug-line">{log}</div>
+              ))}
+            </div>
+            
             <div className="error-actions">
               <button className="retry-button" onClick={initializeVoiceChat}>
                 🔄 Попробовать снова
               </button>
               <button className="demo-button" onClick={enableDemoMode}>
-                🎭 Включить демо-режим
+                🎭 Демо-режим
               </button>
             </div>
           </div>
@@ -205,7 +178,6 @@ const VoiceChat = () => {
     );
   }
 
-  // Основной интерфейс
   return (
     <div className="voice-chat">
       <div className="voice-chat-header">
@@ -213,8 +185,7 @@ const VoiceChat = () => {
         <div className="voice-chat-status">
           <div className={`status-indicator ${connectionStatus}`}>
             {connectionStatus === 'connected' ? 'Подключен' : 
-             connectionStatus === 'connecting' ? 'Подключается...' : 
-             connectionStatus === 'error' ? 'Ошибка' : 'Отключен'}
+             connectionStatus === 'connecting' ? 'Подключается...' : 'Отключен'}
           </div>
         </div>
       </div>
@@ -224,10 +195,8 @@ const VoiceChat = () => {
           <div className="setup-info">
             <h4>Создать голосовую комнату</h4>
             <p>Пригласите тиммейтов для обсуждения тактики и координации в игре</p>
-            <div className="feature-highlights">
-              <span>🔒 Безопасное соединение</span>
-              <span>🎯 Низкая задержка</span>
-              <span>👥 До 8 участников</span>
+            <div className="server-info">
+              <strong>WebSocket URL:</strong> wss://squadup-backend-03vr.onrender.com/ws
             </div>
           </div>
           <button 
@@ -245,18 +214,14 @@ const VoiceChat = () => {
           </div>
         </div>
       ) : (
-        // ... остальной код интерфейса без изменений
         <div className="voice-chat-active">
           <div className="room-info">
             <div className="room-id">
               <span>ID комнаты: <strong>{roomId}</strong></span>
-              <button className="copy-button">
+              <button className="copy-button" onClick={() => navigator.clipboard.writeText(roomId)}>
                 📋 Копировать
               </button>
             </div>
-            <button className="invite-button">
-              ➕ Пригласить игрока
-            </button>
           </div>
 
           <div className="participants-list">
@@ -274,27 +239,9 @@ const VoiceChat = () => {
                     </span>
                     <div className="participant-status">
                       {participant.isMuted ? '🔇 Заглушен' : '🎤 Говорит'}
-                      {participant.isYou && isMuted && ' (Вы заглушены)'}
                     </div>
                   </div>
                 </div>
-                
-                {!participant.isYou && (
-                  <div className="participant-controls">
-                    <div className="volume-control">
-                      <span className="volume-icon">🔊</span>
-                      <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        value={participant.volume}
-                        onChange={(e) => handleVolumeChange(participant.userId, parseInt(e.target.value))}
-                        className="volume-slider"
-                      />
-                      <span className="volume-value">{participant.volume}%</span>
-                    </div>
-                  </div>
-                )}
               </div>
             ))}
           </div>
@@ -312,6 +259,17 @@ const VoiceChat = () => {
             >
               📞 Отключиться
             </button>
+          </div>
+
+          <div className="debug-section">
+            <details>
+              <summary>Отладочная информация</summary>
+              <div className="debug-log">
+                {debugLog.map((log, index) => (
+                  <div key={index} className="debug-line">{log}</div>
+                ))}
+              </div>
+            </details>
           </div>
         </div>
       )}
