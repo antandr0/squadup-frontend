@@ -21,8 +21,6 @@ const Navigation = () => {
 
         {/* Десктопное меню */}
         <div className="nav-menu">
-          <a href="#features" className="nav-link">Возможности</a>
-          <a href="#success" className="nav-link">Истории успеха</a>
           <a href="#demo" className="nav-link">Демо</a>
           
           {user ? (
@@ -52,8 +50,6 @@ const Navigation = () => {
           
           {isMenuOpen && (
             <div className="mobile-nav-menu">
-              <a href="#features" className="mobile-nav-link">Возможности</a>
-              <a href="#success" className="mobile-nav-link">Истории успеха</a>
               <a href="#demo" className="mobile-nav-link">Демо</a>
               
               {user ? (

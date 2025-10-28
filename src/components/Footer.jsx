@@ -1,86 +1,123 @@
 import React from 'react';
+import './Footer.css';
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
-
   return (
-    <footer style={{
-      background: 'rgba(10, 10, 25, 0.95)',
-      padding: '50px 20px 30px 20px',
-      borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-      color: '#b0b0d0'
-    }}>
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-        gap: '40px',
-        marginBottom: '30px'
-      }}>
+    <footer className="footer">
+      <div className="footer-container">
         
-        {/* О компании */}
-        <div>
-          <h3 style={{ color: 'white', marginBottom: '15px', fontSize: '1.2rem' }}>
-            🎮 О SquadUp
-          </h3>
-          <p style={{ lineHeight: '1.6', fontSize: '0.9rem' }}>
-            Современная платформа для поиска тиммейтов и создания игровых команд. 
-            Объединяем геймеров со всей России для совместных побед!
+        {/* Основной контент в 3 колонки */}
+        <div className="footer-grid">
+          
+          {/* Колонка 1: О проекте и фичи */}
+          <div className="footer-column">
+            <div className="footer-section">
+              <h3 className="footer-title">🎮 О SquadUp</h3>
+              <p className="footer-description">
+                Современная платформа для поиска тиммейтов и создания игровых команд. 
+                Объединяем геймеров со всей России для совместных побед!
+              </p>
+            </div>
+            
+            <div className="features-grid">
+              <div className="feature-item">
+                <span className="feature-icon">🎯</span>
+                <span className="feature-text">Умный подбор по стилю игры</span>
+              </div>
+              <div className="feature-item">
+                <span className="feature-icon">🌍</span>
+                <span className="feature-text">Геопоиск игроков рядом</span>
+              </div>
+              <div className="feature-item">
+                <span className="feature-icon">⭐</span>
+                <span className="feature-text">Система рейтингов и отзывов</span>
+              </div>
+              <div className="feature-item">
+                <span className="feature-icon">🎙️</span>
+                <span className="feature-text">Встроенный голосовой чат</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Колонка 2: Правовая информация */}
+          <div className="footer-column">
+            <div className="footer-section">
+              <h3 className="footer-title">📋 Правовая информация</h3>
+              <div className="legal-links">
+                <a href="/privacy" className="legal-link">
+                  <span className="legal-icon">🔒</span>
+                  Политика конфиденциальности
+                </a>
+                <a href="/terms" className="legal-link">
+                  <span className="legal-icon">📄</span>
+                  Пользовательское соглашение
+                </a>
+                <a href="/cookies" className="legal-link">
+                  <span className="legal-icon">🍪</span>
+                  Политика cookies
+                </a>
+                <a href="/offer" className="legal-link">
+                  <span className="legal-icon">📝</span>
+                  Оферта
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Колонка 3: Контакты как кнопки */}
+          <div className="footer-column">
+            <div className="footer-section">
+              <h3 className="footer-title">📞 Контакты</h3>
+              <div className="contact-buttons">
+                <a 
+                  href="mailto:redspicez@yandex.ru" 
+                  className="contact-button"
+                >
+                  <span className="contact-icon">📧</span>
+                  Email: redspicez@yandex.ru
+                </a>
+                <a 
+                  href="https://t.me/aaaaandreevich" 
+                  className="contact-button"
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  <span className="contact-icon">💬</span>
+                  Telegram: @aaaaandreevich
+                </a>
+                <a 
+                  href="https://steamcommunity.com/id/AntAndr" 
+                  className="contact-button"
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  <span className="contact-icon">🎮</span>
+                  Steam: AntAndr
+                </a>
+                <a 
+                  href="https://squadup-frontend.vercel.app" 
+                  className="contact-button"
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  <span className="contact-icon">🌐</span>
+                  Сайт: squadup-frontend.vercel.app
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Нижняя часть с копирайтом */}
+        <div className="footer-bottom">
+          <div className="footer-divider"></div>
+          <p className="copyright">
+            © 2025 SquadUp. Все права защищены. 
+            <span className="copyright-extra">Сделано с ❤️ для геймеров</span>
           </p>
         </div>
 
-        {/* Как работает */}
-        <div>
-          <h3 style={{ color: 'white', marginBottom: '15px', fontSize: '1.2rem' }}>
-            🗺️ Как работает
-          </h3>
-          <ul style={{ listStyle: 'none', padding: 0, lineHeight: '1.8', fontSize: '0.9rem' }}>
-            <li>🎯 Умный подбор по стилю игры</li>
-            <li>🌍 Геопоиск игроков рядом</li>
-            <li>⭐ Система рейтингов и отзывов</li>
-            <li>🎙️ Встроенный голосовой чат</li>
-          </ul>
-        </div>
-
-        {/* Правовая информация */}
-        <div>
-          <h3 style={{ color: 'white', marginBottom: '15px', fontSize: '1.2rem' }}>
-            📋 Правовая информация
-          </h3>
-          <ul style={{ listStyle: 'none', padding: 0, lineHeight: '1.8', fontSize: '0.9rem' }}>
-            <li><a href="#privacy" style={{ color: '#b0b0d0', textDecoration: 'none' }}>🔒 Политика конфиденциальности</a></li>
-            <li><a href="#terms" style={{ color: '#b0b0d0', textDecoration: 'none' }}>📄 Пользовательское соглашение</a></li>
-            <li><a href="#cookies" style={{ color: '#b0b0d0', textDecoration: 'none' }}>🍪 Политика cookies</a></li>
-            <li><a href="#offer" style={{ color: '#b0b0d0', textDecoration: 'none' }}>📝 Оферта</a></li>
-          </ul>
-        </div>
-
-        {/* Контакты */}
-        <div>
-          <h3 style={{ color: 'white', marginBottom: '15px', fontSize: '1.2rem' }}>
-            📞 Контакты
-          </h3>
-          <ul style={{ listStyle: 'none', padding: 0, lineHeight: '1.8', fontSize: '0.9rem' }}>
-            <li>📧 Email: redspicez@yandex.ru</li>
-            <li>💬 Telegram: @@aaaaandreevich</li>
-            <li>🎮 Steam: AntAndr</li>
-            <li>🌐 Сайт: squadup-frontend.vercel.app</li>
-          </ul>
-        </div>
-
-      </div>
-
-      {/* Копирайт */}
-      <div style={{
-        textAlign: 'center',
-        paddingTop: '30px',
-        borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-        fontSize: '0.8rem',
-        color: '#666'
-      }}>
-        <p>© {currentYear} SquadUp. Все права защищены.</p>
-        <p style={{ marginTop: '5px' }}>Сделано с ❤️ для российских геймеров</p>
       </div>
     </footer>
   );
