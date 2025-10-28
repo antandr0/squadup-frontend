@@ -46,11 +46,6 @@ const Navigation = ({ onLogoClick, onLogout, onDashboardClick }) => {
           SquadUp
         </a>
 
-        {/* Анимированная золотая надпись */}
-        <div className="animated-slogan">
-          <span className="slogan-text">Find your best team</span>
-        </div>
-
         {/* Десктопное меню */}
         <div className="nav-menu">
           <a href="#features" className="nav-link">Возможности</a>
