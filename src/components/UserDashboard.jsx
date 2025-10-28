@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
+import VoiceChat from './VoiceChat';
 import './UserDashboard.css';
 
 const UserDashboard = () => {
@@ -42,29 +43,34 @@ const UserDashboard = () => {
             </div>
           </div>
 
-          <div className="dashboard-actions">
-            <h3 className="actions-title">Быстрые действия</h3>
-            <div className="action-buttons">
-              <button className="action-btn primary">
-                🎯 Найти тиммейтов
-              </button>
-              <button className="action-btn secondary">
-                👥 Моя команда
-              </button>
-              <button className="action-btn secondary">
-                ⚙️ Настройки профиля
-              </button>
-            </div>
-          </div>
+          <div className="dashboard-main">
+            {/* Голосовой чат */}
+            <VoiceChat />
 
-          <div className="demo-notice">
-            <div className="demo-icon">🚧</div>
-            <div className="demo-content">
-              <h4>Панель управления в разработке</h4>
-              <p>
-                Мы активно работаем над полной версией панели управления. 
-                Скюда появятся поиск команд, чаты, статистика и многое другое!
-              </p>
+            <div className="dashboard-actions">
+              <h3 className="actions-title">Быстрые действия</h3>
+              <div className="action-buttons">
+                <button className="action-btn primary">
+                  🎯 Найти тиммейтов
+                </button>
+                <button className="action-btn secondary">
+                  👥 Моя команда
+                </button>
+                <button className="action-btn secondary">
+                  ⚙️ Настройки профиля
+                </button>
+              </div>
+            </div>
+
+            <div className="demo-notice">
+              <div className="demo-icon">🚧</div>
+              <div className="demo-content">
+                <h4>Панель управления в разработке</h4>
+                <p>
+                  Мы активно работаем над полной версией панели управления. 
+                  Скоро появятся поиск команд, чаты, статистика и многое другое!
+                </p>
+              </div>
             </div>
           </div>
         </div>

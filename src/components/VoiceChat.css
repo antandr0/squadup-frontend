@@ -1,0 +1,354 @@
+.voice-chat {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 25px;
+  margin-bottom: 30px;
+  backdrop-filter: blur(10px);
+}
+
+.voice-chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.voice-chat-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  background: linear-gradient(45deg, #4e54c8, #8a2be2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+
+.status-indicator {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-indicator.connected {
+  background: rgba(0, 255, 136, 0.2);
+  color: #00ff88;
+  border: 1px solid rgba(0, 255, 136, 0.4);
+}
+
+.status-indicator.disconnected {
+  background: rgba(255, 107, 107, 0.2);
+  color: #ff6b6b;
+  border: 1px solid rgba(255, 107, 107, 0.4);
+}
+
+/* Стили для настройки */
+.voice-chat-setup {
+  text-align: center;
+  padding: 30px 20px;
+}
+
+.setup-info h4 {
+  font-size: 1.2rem;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.setup-info p {
+  color: #b0b0d0;
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+.connect-button {
+  background: linear-gradient(45deg, #4e54c8, #8a2be2);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(78, 84, 200, 0.4);
+}
+
+.connect-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(78, 84, 200, 0.6);
+}
+
+/* Стили для активного чата */
+.voice-chat-active {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.room-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 15px 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.room-id {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #b0b0d0;
+  font-family: 'Courier New', monospace;
+}
+
+.copy-button, .invite-button {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.copy-button:hover, .invite-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+/* Стили для списка участников */
+.participants-list {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.participants-list h4 {
+  color: white;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.participant-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.participant-item:last-child {
+  border-bottom: none;
+}
+
+.participant-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.participant-avatar {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(45deg, #4e54c8, #8a2be2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+  font-size: 1rem;
+}
+
+.participant-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.participant-name {
+  color: white;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.participant-status {
+  color: #b0b0d0;
+  font-size: 0.8rem;
+}
+
+/* Контролы громкости */
+.participant-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.volume-icon {
+  font-size: 0.9rem;
+}
+
+.volume-slider {
+  width: 80px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #4e54c8;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #4e54c8;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+.volume-value {
+  color: #b0b0d0;
+  font-size: 0.8rem;
+  min-width: 30px;
+  text-align: center;
+}
+
+/* Контролы голосового чата */
+.voice-controls {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.mute-button, .disconnect-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.mute-button {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.mute-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.mute-button.muted {
+  background: rgba(255, 107, 107, 0.2);
+  color: #ff6b6b;
+  border-color: rgba(255, 107, 107, 0.4);
+}
+
+.disconnect-button {
+  background: linear-gradient(45deg, #ff6b6b, #ffa726);
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.disconnect-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+/* Информация о возможностях */
+.voice-features-info {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.voice-features-info h4 {
+  color: white;
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+.voice-features-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.voice-features-info li {
+  color: #b0b0d0;
+  padding: 4px 0;
+  font-size: 0.9rem;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .voice-chat {
+    padding: 20px 15px;
+  }
+  
+  .room-info {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .participant-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .participant-controls {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  .voice-controls {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .voice-chat-title {
+    font-size: 1.2rem;
+  }
+  
+  .connect-button {
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
+}

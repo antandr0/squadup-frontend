@@ -1,7 +1,7 @@
 .user-dashboard {
   padding: 80px 20px;
   background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
-  min-height: 60vh;
+  min-height: 100vh;
 }
 
 .dashboard-container {
@@ -46,6 +46,7 @@
   padding: 30px;
   text-align: center;
   backdrop-filter: blur(10px);
+  height: fit-content;
 }
 
 .user-avatar {
@@ -103,6 +104,12 @@
   color: #00ff88;
 }
 
+.dashboard-main {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
 .dashboard-actions {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -158,7 +165,6 @@
 }
 
 .demo-notice {
-  grid-column: 1 / -1;
   background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 152, 0, 0.1));
   border: 1px solid rgba(255, 193, 7, 0.3);
   border-radius: 16px;
