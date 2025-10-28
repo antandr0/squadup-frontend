@@ -33,6 +33,10 @@ const AppContent = () => {
     setCurrentView('landing');
   };
 
+  const handleDashboardClick = () => {
+    setCurrentView('dashboard');
+  };
+
   const handleLogout = () => {
     setCurrentView('auto');
   };
@@ -57,7 +61,11 @@ const AppContent = () => {
       background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)',
       color: 'white'
     }}>
-      <Navigation onLogoClick={handleLogoClick} onLogout={handleLogout} />
+      <Navigation 
+        onLogoClick={handleLogoClick} 
+        onLogout={handleLogout}
+        onDashboardClick={handleDashboardClick}
+      />
       
       {view === 'dashboard' ? (
         <UserDashboard />

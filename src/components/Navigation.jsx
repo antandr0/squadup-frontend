@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import './Navigation.css';
 
-const Navigation = ({ onLogoClick, onLogout }) => {
+const Navigation = ({ onLogoClick, onLogout, onDashboardClick }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, logout } = useAuth();
 
@@ -19,6 +19,19 @@ const Navigation = ({ onLogoClick, onLogout }) => {
     if (onLogoClick) {
       onLogoClick();
     }
+  };
+
+  const handleUserMenuClick = () => {
+    if (onDashboardClick) {
+      onDashboardClick();
+    }
+  };
+
+  const handleMobileUserInfoClick = () => {
+    if (onDashboardClick) {
+      onDashboardClick();
+    }
+    setIsMenuOpen(false);
   };
 
   return (
@@ -40,7 +53,11 @@ const Navigation = ({ onLogoClick, onLogout }) => {
           <a href="#demo" className="nav-link">Демо</a>
           
           {user ? (
-            <div className="user-menu">
+            <div 
+              className="user-menu"
+              onClick={handleUserMenuClick}
+              style={{ cursor: 'pointer' }}
+            >
               <span className="user-info">
                 Играет: {user.nickname || user.email}
               </span>
@@ -72,7 +89,11 @@ const Navigation = ({ onLogoClick, onLogout }) => {
               
               {user ? (
                 <>
-                  <span className="mobile-user-info">
+                  <span 
+                    className="mobile-user-info"
+                    onClick={handleMobileUserInfoClick}
+                    style={{ cursor: 'pointer' }}
+                  >
                     Играет: {user.nickname || user.email}
                   </span>
                   <button onClick={handleLogout} className="mobile-logout-button">

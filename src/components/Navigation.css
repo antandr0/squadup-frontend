@@ -80,6 +80,15 @@
   padding: 12px 20px;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.user-menu:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(78, 84, 200, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(78, 84, 200, 0.2);
 }
 
 .user-info {
@@ -180,6 +189,14 @@
   background: linear-gradient(45deg, #4e54c8, #8a2be2);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.mobile-user-info:hover {
+  background: rgba(78, 84, 200, 0.1);
+  transform: translateX(5px);
 }
 
 .mobile-logout-button {
