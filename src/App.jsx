@@ -10,6 +10,7 @@ import StatisticsSection from './components/StatisticsSection';
 import SuccessStories from './components/SuccessStories';
 import OnboardingFlow from './components/OnboardingFlow';
 import InteractiveDemo from './components/InteractiveDemo';
+import UserDashboard from './components/UserDashboard';
 
 const AppContent = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -34,13 +35,19 @@ const AppContent = () => {
     }}>
       <Navigation />
       
-      <HeroSection onOpenAuth={handleOpenAuth} />
-      <ProblemSolutionSection />
-      <FeaturesSection />
-      <StatisticsSection />
-      <InteractiveDemo />
-      <SuccessStories />
-      <OnboardingFlow onOpenAuth={handleOpenAuth} />
+      {user ? (
+        <UserDashboard />
+      ) : (
+        <>
+          <HeroSection onOpenAuth={handleOpenAuth} />
+          <ProblemSolutionSection />
+          <FeaturesSection />
+          <StatisticsSection />
+          <InteractiveDemo />
+          <SuccessStories />
+          <OnboardingFlow onOpenAuth={handleOpenAuth} />
+        </>
+      )}
 
       <Footer />
 
