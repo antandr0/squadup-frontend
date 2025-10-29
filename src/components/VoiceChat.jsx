@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import WebRTCManager from '../services/WebRTCManager';
-import DemoVoiceChat from './DemoVoiceChat';
-import WebRTCDebugger from '../services/WebRTCDebugger';
+import EnhancedDemoVoiceChat from './EnhancedDemoVoiceChat';
 import './VoiceChat.css';
 
 const VoiceChat = () => {
@@ -15,7 +14,7 @@ const VoiceChat = () => {
   const [useDemoMode, setUseDemoMode] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [debugLog, setDebugLog] = useState([]);
-  const [diagnosis, setDiagnosis] = useState(null);
+  const [isUsingExternalService, setIsUsingExternalService] = useState(false);
   
   const webRTCManager = useRef(null);
 
@@ -36,13 +35,6 @@ const VoiceChat = () => {
     };
   }, []);
 
-  const runDiagnostics = async () => {
-    addDebugLog('Запускаем диагностику подключения...');
-    const diagnosisResult = await WebRTCDebugger.diagnoseConnection();
-    setDiagnosis(diagnosisResult);
-    addDebugLog('Диагностика завершена');
-  };
-
   const initializeVoiceChat = async () => {
     try {
       setConnectionStatus('connecting');
@@ -57,7 +49,7 @@ const VoiceChat = () => {
       setRoomId(newRoomId);
       addDebugLog(`Создана комната: ${newRoomId}`);
       
-      addDebugLog('Подключаемся к WebSocket серверу...');
+      addDebugLog('Подключаемся к серверу сигналинга...');
       await webRTCManager.current.connectToSignalingServer(
         newRoomId,
         user.id,
@@ -73,6 +65,7 @@ const VoiceChat = () => {
             })));
             setIsConnected(true);
             setConnectionStatus('connected');
+            setIsUsingExternalService(webRTCManager.current.isExternalService());
           },
           
           onUserJoined: (newUser) => {
@@ -101,15 +94,21 @@ const VoiceChat = () => {
         }
       );
 
-      addDebugLog('✅ WebSocket подключен успешно');
-
     } catch (error) {
       addDebugLog(`❌ Ошибка инициализации: ${error.message}`);
       setConnectionStatus('error');
-      setErrorMessage(error.message);
-      
-      // Автоматически запускаем диагностику при ошибке
-      setTimeout(runDiagnostics, 1000);
+      setErrorMessage(`
+        Не удалось подключиться к серверу голосового чата.
+        
+        🔧 Причина: ${error.message}
+        
+        💡 Решение:
+        • Render (бесплатный тариф) блокирует WebSocket соединения через Cloudflare
+        • Для работы голосового чата нужен хостинг с поддержкой WebSocket
+        • Альтернативы: Railway.app, Fly.io, или платный тариф Render
+        
+        🎭 А пока можете протестировать интерфейс в демо-режиме!
+      `);
     }
   };
 
@@ -121,6 +120,7 @@ const VoiceChat = () => {
     setIsConnected(false);
     setConnectionStatus('disconnected');
     setParticipants([]);
+    setIsUsingExternalService(false);
     addDebugLog('✅ Отключены от голосового чата');
   };
 
@@ -141,7 +141,7 @@ const VoiceChat = () => {
   };
 
   if (useDemoMode) {
-    return <DemoVoiceChat />;
+    return <EnhancedDemoVoiceChat />;
   }
 
   if (connectionStatus === 'error' && !isConnected) {
@@ -157,22 +157,12 @@ const VoiceChat = () => {
         <div className="error-state">
           <div className="error-icon">⚠️</div>
           <div className="error-content">
-            <h4>Не удалось подключиться</h4>
-            <p>{errorMessage}</p>
-            
-            {diagnosis && (
-              <div className="diagnosis-info">
-                <h5>Результаты диагностики:</h5>
-                <p><strong>Рекомендация:</strong> {diagnosis.recommendation}</p>
-                <div className="ws-tests">
-                  {diagnosis.websocketTests.map((test, index) => (
-                    <div key={index} className={`ws-test ${test.success ? 'success' : 'error'}`}>
-                      <strong>{test.url}</strong>: {test.success ? '✅ Успех' : `❌ ${test.error}`}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            <h4>Проблема с подключением</h4>
+            <div className="error-description">
+              {errorMessage.split('\n').map((line, index) => (
+                <p key={index}>{line}</p>
+              ))}
+            </div>
             
             <div className="debug-log">
               <h5>Лог отладки:</h5>
@@ -184,9 +174,6 @@ const VoiceChat = () => {
             <div className="error-actions">
               <button className="retry-button" onClick={initializeVoiceChat}>
                 🔄 Попробовать снова
-              </button>
-              <button className="diagnose-button" onClick={runDiagnostics}>
-                🔍 Диагностика
               </button>
               <button className="demo-button" onClick={enableDemoMode}>
                 🎭 Демо-режим
@@ -204,7 +191,8 @@ const VoiceChat = () => {
         <h3 className="voice-chat-title">🎙️ Голосовой чат</h3>
         <div className="voice-chat-status">
           <div className={`status-indicator ${connectionStatus}`}>
-            {connectionStatus === 'connected' ? 'Подключен' : 
+            {connectionStatus === 'connected' ? 
+              (isUsingExternalService ? 'Демо-режим' : 'Подключен') : 
              connectionStatus === 'connecting' ? 'Подключается...' : 'Отключен'}
           </div>
         </div>
@@ -215,13 +203,16 @@ const VoiceChat = () => {
           <div className="setup-info">
             <h4>Создать голосовую комнату</h4>
             <p>Пригласите тиммейтов для обсуждения тактики и координации в игре</p>
-            <div className="server-info">
-              <strong>WebSocket URL:</strong> wss://squadup-backend-03vr.onrender.com/ws
+            
+            <div className="connection-info">
+              <p><strong>Текущий статус:</strong> {connectionStatus}</p>
+              <p><strong>Сервер:</strong> squadup-backend-03vr.onrender.com</p>
+              <p className="warning-text">
+                ⚠️ Бесплатный Render может блокировать WebSocket соединения
+              </p>
             </div>
-            <button className="diagnose-link" onClick={runDiagnostics}>
-              🔍 Проверить подключение
-            </button>
           </div>
+          
           <button 
             className="connect-button"
             onClick={initializeVoiceChat}
@@ -238,6 +229,16 @@ const VoiceChat = () => {
         </div>
       ) : (
         <div className="voice-chat-active">
+          {isUsingExternalService && (
+            <div className="demo-notice">
+              <div className="demo-icon">🎭</div>
+              <div className="demo-content">
+                <h4>Демо-режим активен</h4>
+                <p>Используется внешний WebSocket сервер для демонстрации. Реальный голосовой чат будет работать после смены хостинга.</p>
+              </div>
+            </div>
+          )}
+
           <div className="room-info">
             <div className="room-id">
               <span>ID комнаты: <strong>{roomId}</strong></span>
@@ -247,6 +248,7 @@ const VoiceChat = () => {
             </div>
             <div className="room-stats">
               👥 {participants.length}/6 игроков
+              {isUsingExternalService && ' (демо)'}
             </div>
           </div>
 
