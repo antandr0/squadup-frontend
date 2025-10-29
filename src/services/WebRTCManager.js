@@ -4,9 +4,28 @@ class WebRTCManager {
   constructor() {
     this.simpleWebRTC = new SimpleWebRTC();
     this.isUsingExternalService = false;
+    this.connectionTimeout = null;
   }
 
   async connectToSignalingServer(roomId, userId, nickname, callbacks) {
+    // Устанавливаем общий таймаут 15 секунд
+    return new Promise(async (resolve, reject) => {
+      this.connectionTimeout = setTimeout(() => {
+        reject(new Error('Таймаут подключения: сервер не отвежает более 15 секунд'));
+      }, 15000);
+
+      try {
+        await this.tryConnect(roomId, userId, nickname, callbacks);
+        clearTimeout(this.connectionTimeout);
+        resolve();
+      } catch (error) {
+        clearTimeout(this.connectionTimeout);
+        reject(error);
+      }
+    });
+  }
+
+  async tryConnect(roomId, userId, nickname, callbacks) {
     // Сначала пробуем наш бэкенд
     try {
       const wsUrl = 'wss://squadup-backend-03vr.onrender.com/ws';
@@ -34,17 +53,19 @@ class WebRTCManager {
       this.isUsingExternalService = true;
     } catch (externalError) {
       console.error('❌ Все способы подключения не удались');
-      throw externalError;
+      throw new Error(`Не удалось подключиться: ${externalError.message}`);
     }
   }
 
   async connectToExternalService(roomId, userId, nickname, callbacks) {
-    // Используем публичный WebSocket эхо-сервер для демонстрации
-    const externalWsUrl = 'wss://ws.postman-echo.com/raw';
-    
     return new Promise((resolve, reject) => {
+      const externalWsUrl = 'wss://ws.postman-echo.com/raw';
+      console.log('🔗 Пробуем внешний WebSocket сервис...');
+      
       const ws = new WebSocket(externalWsUrl);
-      const timeout = setTimeout(() => reject(new Error('External WebSocket timeout')), 10000);
+      const timeout = setTimeout(() => {
+        reject(new Error('Внешний WebSocket сервер не отвежает'));
+      }, 10000);
 
       ws.onopen = () => {
         clearTimeout(timeout);
@@ -59,14 +80,21 @@ class WebRTCManager {
               { userId: 'demo-2', nickname: 'Player3' }
             ]);
           }
-        }, 1000);
+        }, 500);
         
+        // Закрываем соединение - оно нам больше не нужно для демо
+        setTimeout(() => ws.close(), 1000);
         resolve();
       };
 
-      ws.onerror = () => {
+      ws.onerror = (error) => {
         clearTimeout(timeout);
-        reject(new Error('External WebSocket error'));
+        console.error('❌ Ошибка внешнего WebSocket:', error);
+        reject(new Error('Внешний WebSocket сервер недоступен'));
+      };
+
+      ws.onclose = () => {
+        clearTimeout(timeout);
       };
     });
   }
@@ -77,6 +105,9 @@ class WebRTCManager {
   }
 
   leaveRoom() {
+    if (this.connectionTimeout) {
+      clearTimeout(this.connectionTimeout);
+    }
     this.simpleWebRTC.leaveRoom();
   }
 
@@ -89,6 +120,9 @@ class WebRTCManager {
   }
 
   cleanup() {
+    if (this.connectionTimeout) {
+      clearTimeout(this.connectionTimeout);
+    }
     this.simpleWebRTC.cleanup();
   }
 

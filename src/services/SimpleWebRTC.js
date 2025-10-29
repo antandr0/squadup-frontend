@@ -6,65 +6,61 @@ class SimpleWebRTC {
     this.roomId = null;
     this.userId = null;
     this.callbacks = {};
+    this.connectionTimeout = null;
   }
 
   async connect(wsUrl, roomId, userId, nickname) {
-    try {
+    return new Promise((resolve, reject) => {
       this.roomId = roomId;
       this.userId = userId;
       
       console.log('🎯 Подключаемся к WebSocket:', wsUrl);
       
-      return new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => {
-          reject(new Error('Таймаут подключения к WebSocket'));
-        }, 10000);
+      // Таймаут подключения
+      this.connectionTimeout = setTimeout(() => {
+        reject(new Error('WebSocket сервер не отвежает'));
+      }, 10000);
 
-        this.ws = new WebSocket(wsUrl);
+      this.ws = new WebSocket(wsUrl);
 
-        this.ws.onopen = () => {
-          clearTimeout(timeout);
-          console.log('✅ WebSocket подключен успешно');
-          
-          // Отправляем запрос на присоединение к комнате
-          this.ws.send(JSON.stringify({
-            type: 'join-room',
-            roomId,
-            userId,
-            nickname
-          }));
-          
-          resolve();
-        };
+      this.ws.onopen = () => {
+        clearTimeout(this.connectionTimeout);
+        console.log('✅ WebSocket подключен успешно');
+        
+        // Отправляем запрос на присоединение к комнате
+        this.ws.send(JSON.stringify({
+          type: 'join-room',
+          roomId,
+          userId,
+          nickname
+        }));
+        
+        resolve();
+      };
 
-        this.ws.onmessage = (event) => {
-          try {
-            const data = JSON.parse(event.data);
-            this.handleMessage(data);
-          } catch (error) {
-            console.error('❌ Ошибка парсинга сообщения:', error);
-          }
-        };
+      this.ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          this.handleMessage(data);
+        } catch (error) {
+          console.error('❌ Ошибка парсинга сообщения:', error);
+        }
+      };
 
-        this.ws.onerror = (error) => {
-          clearTimeout(timeout);
-          console.error('❌ WebSocket ошибка:', error);
-          reject(new Error('WebSocket ошибка подключения'));
-        };
+      this.ws.onerror = (error) => {
+        clearTimeout(this.connectionTimeout);
+        console.error('❌ WebSocket ошибка:', error);
+        reject(new Error('Не удалось установить соединение с сервером'));
+      };
 
-        this.ws.onclose = (event) => {
-          clearTimeout(timeout);
-          console.log(`🔌 WebSocket закрыт: код ${event.code}, причина: ${event.reason}`);
-          if (event.code !== 1000) {
-            reject(new Error(`Соединение закрыто: код ${event.code}`));
-          }
-        };
-      });
-
-    } catch (error) {
-      console.error('❌ Ошибка подключения WebRTC:', error);
-      throw error;
-    }
+      this.ws.onclose = (event) => {
+        clearTimeout(this.connectionTimeout);
+        console.log(`🔌 WebSocket закрыт: код ${event.code}, причина: ${event.reason}`);
+        if (event.code !== 1000 && !this.connectionTimeout) {
+          reject(new Error(`Соединение прервано: код ${event.code}`));
+        }
+      };
+    });
   }
 
   handleMessage(data) {
@@ -143,6 +139,10 @@ class SimpleWebRTC {
   }
 
   leaveRoom() {
+    if (this.connectionTimeout) {
+      clearTimeout(this.connectionTimeout);
+    }
+    
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify({
         type: 'leave-room',
