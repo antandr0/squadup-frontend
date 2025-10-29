@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import WebRTCManager from '../services/WebRTCManager';
 import DemoVoiceChat from './DemoVoiceChat';
+import WebRTCDebugger from '../services/WebRTCDebugger';
 import './VoiceChat.css';
 
 const VoiceChat = () => {
@@ -14,6 +15,7 @@ const VoiceChat = () => {
   const [useDemoMode, setUseDemoMode] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [debugLog, setDebugLog] = useState([]);
+  const [diagnosis, setDiagnosis] = useState(null);
   
   const webRTCManager = useRef(null);
 
@@ -33,6 +35,13 @@ const VoiceChat = () => {
       }
     };
   }, []);
+
+  const runDiagnostics = async () => {
+    addDebugLog('Запускаем диагностику подключения...');
+    const diagnosisResult = await WebRTCDebugger.diagnoseConnection();
+    setDiagnosis(diagnosisResult);
+    addDebugLog('Диагностика завершена');
+  };
 
   const initializeVoiceChat = async () => {
     try {
@@ -84,15 +93,6 @@ const VoiceChat = () => {
             setParticipants(prev => prev.filter(p => p.userId !== userId));
           },
           
-          onUserMuteUpdated: (userId, isMuted) => {
-            addDebugLog(`🔇 Участник ${userId} mute: ${isMuted}`);
-            setParticipants(prev => 
-              prev.map(p => 
-                p.userId === userId ? { ...p, isMuted } : p
-              )
-            );
-          },
-          
           onError: (errorMsg) => {
             addDebugLog(`❌ Ошибка: ${errorMsg}`);
             setConnectionStatus('error');
@@ -107,6 +107,9 @@ const VoiceChat = () => {
       addDebugLog(`❌ Ошибка инициализации: ${error.message}`);
       setConnectionStatus('error');
       setErrorMessage(error.message);
+      
+      // Автоматически запускаем диагностику при ошибке
+      setTimeout(runDiagnostics, 1000);
     }
   };
 
@@ -157,6 +160,20 @@ const VoiceChat = () => {
             <h4>Не удалось подключиться</h4>
             <p>{errorMessage}</p>
             
+            {diagnosis && (
+              <div className="diagnosis-info">
+                <h5>Результаты диагностики:</h5>
+                <p><strong>Рекомендация:</strong> {diagnosis.recommendation}</p>
+                <div className="ws-tests">
+                  {diagnosis.websocketTests.map((test, index) => (
+                    <div key={index} className={`ws-test ${test.success ? 'success' : 'error'}`}>
+                      <strong>{test.url}</strong>: {test.success ? '✅ Успех' : `❌ ${test.error}`}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
             <div className="debug-log">
               <h5>Лог отладки:</h5>
               {debugLog.map((log, index) => (
@@ -167,6 +184,9 @@ const VoiceChat = () => {
             <div className="error-actions">
               <button className="retry-button" onClick={initializeVoiceChat}>
                 🔄 Попробовать снова
+              </button>
+              <button className="diagnose-button" onClick={runDiagnostics}>
+                🔍 Диагностика
               </button>
               <button className="demo-button" onClick={enableDemoMode}>
                 🎭 Демо-режим
@@ -198,6 +218,9 @@ const VoiceChat = () => {
             <div className="server-info">
               <strong>WebSocket URL:</strong> wss://squadup-backend-03vr.onrender.com/ws
             </div>
+            <button className="diagnose-link" onClick={runDiagnostics}>
+              🔍 Проверить подключение
+            </button>
           </div>
           <button 
             className="connect-button"
@@ -221,6 +244,9 @@ const VoiceChat = () => {
               <button className="copy-button" onClick={() => navigator.clipboard.writeText(roomId)}>
                 📋 Копировать
               </button>
+            </div>
+            <div className="room-stats">
+              👥 {participants.length}/6 игроков
             </div>
           </div>
 

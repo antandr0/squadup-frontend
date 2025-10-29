@@ -552,3 +552,75 @@
 .debug-section details[open] summary {
   color: #4e54c8;
 }
+
+/* Стили для диагностики */
+.diagnosis-info {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 8px;
+  padding: 15px;
+  margin: 15px 0;
+}
+
+.diagnosis-info h5 {
+  color: #ffc107;
+  margin: 0 0 10px 0;
+}
+
+.ws-tests {
+  margin-top: 10px;
+}
+
+.ws-test {
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.ws-test.success {
+  background: rgba(0, 255, 136, 0.1);
+  color: #00ff88;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.ws-test.error {
+  background: rgba(255, 107, 107, 0.1);
+  color: #ff6b6b;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.diagnose-button {
+  background: linear-gradient(45deg, #ffc107, #ff9800);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.diagnose-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+}
+
+.diagnose-link {
+  background: none;
+  border: none;
+  color: #ffc107;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-decoration: underline;
+  margin-top: 10px;
+}
+
+.room-stats {
+  color: #b0b0d0;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 6px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
