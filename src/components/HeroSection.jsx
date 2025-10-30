@@ -41,7 +41,7 @@ const HeroSection = ({ onOpenAuth }) => {
         position: 'relative',
         zIndex: 2
       }}>
-        {/* Главный заголовок - ОРИГИНАЛЬНЫЙ ТЕКСТ */}
+        {/* Главный заголовок */}
         <h1 style={{
           fontSize: 'clamp(2.5rem, 5vw, 4rem)',
           fontWeight: '800',
@@ -52,21 +52,31 @@ const HeroSection = ({ onOpenAuth }) => {
           marginBottom: '1.5rem',
           lineHeight: '1.2'
         }}>
-          Твоя идеальная команда ждёт тебя
+          Твоя идеальная команда ждет тебя
         </h1>
 
-        {/* Подзаголовок */}
+        {/* Подзаголовок 1 */}
         <p style={{
           fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)',
           color: 'rgba(255, 255, 255, 0.8)',
-          marginBottom: '2.5rem',
+          marginBottom: '1rem',
           lineHeight: '1.6',
           maxWidth: '600px',
           marginLeft: 'auto',
           marginRight: 'auto'
         }}>
-          Находите тиммейтов через голосовой чат. Общайтесь в реальном времени, 
-          находите идеальных напарников и побеждайте вместе.
+          Забудь про токсичных рандомов. Находи проверенных тиммейтов рядом с тобой.
+        </p>
+
+        {/* Подзаголовок 2 */}
+        <p style={{
+          fontSize: 'clamp(1.3rem, 3vw, 1.6rem)',
+          color: '#007bff',
+          fontWeight: '600',
+          marginBottom: '2.5rem',
+          lineHeight: '1.4'
+        }}>
+          Пришло время SquadUp.
         </p>
 
         {/* CTA кнопки */}
@@ -100,13 +110,11 @@ const HeroSection = ({ onOpenAuth }) => {
               e.target.style.boxShadow = '0 8px 25px rgba(0, 123, 255, 0.3)';
             }}
           >
-            Начать бесплатно
+            Зарегистрироваться
           </button>
           
           <button
-            onClick={() => {
-              document.getElementById('demo').scrollIntoView({ behavior: 'smooth' });
-            }}
+            onClick={() => onOpenAuth('login')}
             style={{
               background: 'transparent',
               color: '#007bff',
@@ -129,7 +137,7 @@ const HeroSection = ({ onOpenAuth }) => {
               e.target.style.transform = 'translateY(0)';
             }}
           >
-            Попробовать демо
+            Войти
           </button>
         </div>
 
