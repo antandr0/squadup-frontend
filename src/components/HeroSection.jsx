@@ -150,15 +150,15 @@ const HeroSection = ({ onOpenAuth }) => {
           color: 'rgba(255, 255, 255, 0.7)'
         }}>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#007bff' }}>1000+</div>
+            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#007bff' }}>null+</div>
             <div style={{ fontSize: '0.9rem' }}>игроков онлайн</div>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#007bff' }}>500+</div>
+            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#007bff' }}>null</div>
             <div style={{ fontSize: '0.9rem' }}>сыгранных матчей</div>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#007bff' }}>98%</div>
+            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#007bff' }}>null%</div>
             <div style={{ fontSize: '0.9rem' }}>положительных отзывов</div>
           </div>
         </div>

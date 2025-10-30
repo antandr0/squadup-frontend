@@ -24,7 +24,7 @@ const HowItWorks = () => {
           marginBottom: '50px',
           lineHeight: '1.6'
         }}>
-          Демо-версия в разработке...
+          напишу позже...
         </p>
       </div>
     </section>

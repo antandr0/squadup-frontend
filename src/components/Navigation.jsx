@@ -48,8 +48,8 @@ const Navigation = ({ onLogoClick, onLogout, onDashboardClick }) => {
 
         {/* Десктопное меню */}
         <div className="nav-menu">
-          <a href="#features" className="nav-link">Возможности</a>
-          <a href="#success" className="nav-link">Истории успеха</a>
+          <a href="#features" className="nav-link">скоро будет кнопка Возможности</a>
+          <a href="#success" className="nav-link">скоро будет кнопка Отзывы</a>
           
           {user ? (
             <div 
@@ -82,8 +82,8 @@ const Navigation = ({ onLogoClick, onLogout, onDashboardClick }) => {
           
           {isMenuOpen && (
             <div className="mobile-nav-menu">
-              <a href="#features" className="mobile-nav-link">Возможности</a>
-              <a href="#success" className="mobile-nav-link">Истории успеха</a>
+              <a href="#features" className="mobile-nav-link">скоро будет кнопка Возможности</a>
+              <a href="#success" className="mobile-nav-link">скоро будет кнопка Истории успеха</a>
               
               {user ? (
                 <>
