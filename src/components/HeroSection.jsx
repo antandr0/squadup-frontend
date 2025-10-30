@@ -41,7 +41,7 @@ const HeroSection = ({ onOpenAuth }) => {
         position: 'relative',
         zIndex: 2
       }}>
-        {/* Главный заголовок */}
+        {/* Главный заголовок - ОРИГИНАЛЬНЫЙ ТЕКСТ */}
         <h1 style={{
           fontSize: 'clamp(2.5rem, 5vw, 4rem)',
           fontWeight: '800',
@@ -52,7 +52,7 @@ const HeroSection = ({ onOpenAuth }) => {
           marginBottom: '1.5rem',
           lineHeight: '1.2'
         }}>
-          Без подписок. Бесплатно. Сейчас.
+          Твоя идеальная команда ждёт тебя
         </h1>
 
         {/* Подзаголовок */}
