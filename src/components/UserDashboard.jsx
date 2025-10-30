@@ -24,13 +24,11 @@ const UserDashboard = () => {
   const loadDashboardData = async () => {
     try {
       setLoading(true);
-      // Загружаем профили других игроков
       const profilesData = await apiService.getProfiles();
       if (profilesData && Array.isArray(profilesData)) {
         setProfiles(profilesData.slice(0, 6));
       }
 
-      // Пока оставляем статистику null, так как данных нет
       setUserStats({
         matchesPlayed: null,
         winRate: null,
@@ -74,9 +72,6 @@ const UserDashboard = () => {
           <h1 className="dashboard-title">
             Добро пожаловать, <span className="user-highlight">{user.nickname}</span>!
           </h1>
-          <p className="dashboard-subtitle">
-            Твоя игровая команда ждет тебя
-          </p>
         </div>
 
         <div className="dashboard-content">
@@ -90,27 +85,19 @@ const UserDashboard = () => {
               <p className="user-email">{user.email}</p>
               <div className="user-stats-grid">
                 <div className="stat-item">
-                  <span className="stat-value">
-                    {userStats.matchesPlayed !== null ? userStats.matchesPlayed : '--'}
-                  </span>
+                  <span className="stat-value">--</span>
                   <span className="stat-label">матчей</span>
                 </div>
                 <div className="stat-item">
-                  <span className="stat-value">
-                    {userStats.winRate !== null ? `${userStats.winRate}%` : '--'}
-                  </span>
+                  <span className="stat-value">--</span>
                   <span className="stat-label">побед</span>
                 </div>
                 <div className="stat-item">
-                  <span className="stat-value">
-                    {userStats.friendsCount !== null ? userStats.friendsCount : '--'}
-                  </span>
+                  <span className="stat-value">--</span>
                   <span className="stat-label">друзей</span>
                 </div>
                 <div className="stat-item">
-                  <span className="stat-value">
-                    {userStats.rating !== null ? userStats.rating : '--'}
-                  </span>
+                  <span className="stat-value">--</span>
                   <span className="stat-label">рейтинг</span>
                 </div>
                 <div className="stat-item">
@@ -229,17 +216,6 @@ const UserDashboard = () => {
                 </div>
               </div>
             )}
-
-            {/* Информация о системе */}
-            <div className="system-info">
-              <div className="info-card">
-                <div className="info-icon">🚀</div>
-                <div className="info-content">
-                  <h4>Система работает стабильно</h4>
-                  <p>Все функции доступны. Голосовой чат готов к использованию.</p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

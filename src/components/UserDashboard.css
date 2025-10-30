@@ -29,12 +29,6 @@
   -webkit-text-fill-color: #007bff;
 }
 
-.dashboard-subtitle {
-  font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 0;
-}
-
 /* Улучшенная карточка пользователя */
 .user-card.enhanced {
   background: rgba(255, 255, 255, 0.05);
@@ -80,25 +74,31 @@
 
 .user-stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1.5rem;
 }
 
 .stat-item {
   text-align: center;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .stat-value {
   display: block;
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.8rem;
+  font-weight: 800;
   color: #007bff;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 10px rgba(0, 123, 255, 0.3);
 }
 
 .stat-label {
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
 }
 
 .user-status {
@@ -106,6 +106,7 @@
   align-items: center;
   gap: 0.5rem;
   color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
 }
 
 .status-indicator {
@@ -220,9 +221,31 @@
 
 .voice-chat-section,
 .online-players-section,
-.friends-section,
-.system-info {
+.friends-section {
   margin-bottom: 2rem;
+}
+
+/* Исправление иконки в голосовом чате */
+.voice-chat-section .voice-chat-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.voice-chat-section .voice-chat-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.voice-chat-section .voice-icon {
+  margin: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Сетка игроков */
@@ -354,31 +377,6 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Системная информация */
-.info-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.info-icon {
-  font-size: 2rem;
-}
-
-.info-content h4 {
-  color: white;
-  margin-bottom: 0.5rem;
-}
-
-.info-content p {
-  color: rgba(255, 255, 255, 0.6);
-  margin: 0;
-}
-
 /* Адаптивность */
 @media (max-width: 768px) {
   .user-stats-grid {
@@ -406,5 +404,9 @@
     flex-direction: column;
     text-align: center;
     gap: 1rem;
+  }
+  
+  .stat-value {
+    font-size: 1.5rem;
   }
 }
