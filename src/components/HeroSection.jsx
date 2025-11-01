@@ -76,7 +76,7 @@ const HeroSection = ({ onOpenAuth }) => {
           marginBottom: '2.5rem',
           lineHeight: '1.4'
         }}>
-          Пришло время SquadUp.
+          Пришло время SquadUp. Find Your Best Team
         </p>
 
         {/* CTA кнопки */}
