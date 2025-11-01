@@ -58,7 +58,7 @@ const Navigation = ({ onLogoClick, onLogout, onDashboardClick }) => {
               style={{ cursor: 'pointer' }}
             >
               <span className="user-info">
-                Играет: {user.nickname || user.email}
+                В СЕТИ: {user.nickname || user.email}
               </span>
               <button onClick={handleLogout} className="logout-button">
                 Выйти
@@ -92,7 +92,7 @@ const Navigation = ({ onLogoClick, onLogout, onDashboardClick }) => {
                     onClick={handleMobileUserInfoClick}
                     style={{ cursor: 'pointer' }}
                   >
-                    Играет: {user.nickname || user.email}
+                    В СЕТИ: {user.nickname || user.email}
                   </span>
                   <button onClick={handleLogout} className="mobile-logout-button">
                     Выйти
