@@ -15,7 +15,7 @@ const InteractiveDemo = () => {
         </AnimatedIcon>
         <AnimatedIcon delay={200}>
           <p style={{ color: '#b0b0d0', fontSize: '1.2rem' }}>
-            Демо-версия в разработке...
+            Этот пункт пока в разработке...допишу позже
           </p>
         </AnimatedIcon>
       </div>
