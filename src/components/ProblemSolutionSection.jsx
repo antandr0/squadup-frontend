@@ -61,7 +61,7 @@ const ProblemSolutionSection = () => {
                 transition: 'transform 0.3s ease'
               }} onMouseEnter={(e) => e.target.style.transform = 'translateY(-5px)'}
                  onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}>
-                <h3 style={{ color: '#ff6b6b', marginBottom: '15px' }}>Часы поиска</h3>
+                <h3 style={{ color: '#ff6b6b', marginBottom: '15px' }}>Долгий и нудный поиск</h3>
                 <p style={{ color: '#b0b0d0' }}>30 минут поиска в чатах ради одной игры</p>
               </div>
             </AnimatedIcon>
@@ -121,7 +121,7 @@ const ProblemSolutionSection = () => {
               }} onMouseEnter={(e) => e.target.style.transform = 'translateY(-5px)'}
                  onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}>
                 <h3 style={{ color: '#00ff88', marginBottom: '15px' }}>Мгновенный подбор</h3>
-                <p style={{ color: '#b0b0d0' }}>2 клика — и ты уже в голосовом чате с новой командой</p>
+                <p style={{ color: '#b0b0d0' }}>несколько кликов — и ты уже в голосовом чате с новой командой</p>
               </div>
             </AnimatedIcon>
           </div>
