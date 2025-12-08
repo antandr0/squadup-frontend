@@ -18,24 +18,28 @@ class ApiService {
     };
 
     try {
-      console.log(`🌐 Запрос к: ${this.baseURL}${endpoint}`);
+      console.log(`🌐 Запрос к бэкенду: ${this.baseURL}${endpoint}`);
       const response = await fetch(`${this.baseURL}${endpoint}`, config);
       
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        console.error(`❌ HTTP ошибка ${response.status}:`, errorText);
+        throw new Error(`HTTP ${response.status}: ${errorText.substring(0, 100)}`);
       }
         
-      return await response.json();
+      const data = await response.json();
+      console.log(`✅ Ответ от бэкенда (${endpoint}):`, data.success ? 'Успех' : 'Ошибка');
+      return data;
     } catch (error) {
-      console.error(`❌ API Error (${endpoint}):`, error);
+      console.error(`❌ API Ошибка (${endpoint}):`, error.message);
       return { 
         success: false, 
-        error: error.message || 'Network error' 
+        error: error.message || 'Ошибка подключения к серверу. Проверьте интернет.' 
       };
     }
   }
 
-  // АВТОРИЗАЦИЯ
+  // 🔐 АВТОРИЗАЦИЯ
   async login(email, password) {
     return this.request('/api/auth/login', {
       method: 'POST',
@@ -56,16 +60,6 @@ class ApiService {
     });
   }
 
-  // ПРОФИЛИ
-  async getAllProfiles() {
-    return this.request('/api/profiles/all');
-  }
-
-  async getProfile(userId) {
-    return this.request(`/api/profiles?user_id=${userId}`);
-  }
-
-  // АКТИВНОСТЬ
   async updateActivity(userId) {
     return this.request('/api/auth/activity', {
       method: 'POST',
@@ -73,22 +67,52 @@ class ApiService {
     });
   }
 
-  // ПРОСТОЙ DEMO MODE (если бэкенд недоступен)
-  getDemoProfiles() {
-    return {
-      success: true,
-      users: [
-        {
-          id: "demo-1",
-          email: "demo1@test.com",
-          nickname: "DemoUser1",
-          online: true,
-          last_active: new Date().toISOString()
-        }
-      ],
-      total: 1,
-      online_count: 1
-    };
+  // 👥 ПРОФИЛИ (ПОЛУЧАЕМ ИЗ РЕАЛЬНОЙ БАЗЫ ДАННЫХ)
+  async getAllProfiles() {
+    const response = await this.request('/api/profiles/all');
+    
+    // 🔍 ДЕБАГ: Логируем что пришло с бэкенда
+    if (response.success) {
+      console.log(`📊 Реальные данные из БД: ${response.total} пользователей`);
+      console.log(`🟢 Онлайн из БД: ${response.online_count} пользователей`);
+      
+      if (response.users && response.users.length > 0) {
+        console.log('👤 Первый пользователь из БД:', {
+          id: response.users[0].id,
+          nickname: response.users[0].nickname,
+          online: response.users[0].online,
+          email: response.users[0].email,
+          last_active: response.users[0].last_active
+        });
+      }
+    }
+    
+    return response;
+  }
+
+  async getProfile(userId) {
+    return this.request(`/api/profiles?user_id=${userId}`);
+  }
+
+  async updateProfile(profileData) {
+    return this.request('/api/profiles/update', {
+      method: 'POST',
+      body: JSON.stringify(profileData)
+    });
+  }
+
+  // 🗄️ РЕАЛЬНЫЕ БЭКАПЫ ИЗ БАЗЫ ДАННЫХ
+  async createBackup() {
+    return this.request('/api/auth/backup');
+  }
+
+  async getBackupList() {
+    return this.request('/api/auth/backup-list');
+  }
+
+  // 🏥 ПРОВЕРКА РАБОТЫ СЕРВЕРА
+  async checkHealth() {
+    return this.request('/health');
   }
 }
 
