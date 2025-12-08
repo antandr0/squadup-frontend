@@ -153,3 +153,6 @@ const App = () => {
 };
 
 export default App;
+
+// Добавляем в список импортов в начале файла (после других импортов):
+import UsersList from './components/UsersList';

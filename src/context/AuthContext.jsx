@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { apiService } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -16,55 +17,59 @@ export const AuthProvider = ({ children }) => {
 
   // Проверяем наличие токена при загрузке приложения
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
-    
-    if (token && userData) {
-      try {
-        setUser(JSON.parse(userData));
-      } catch (error) {
-        console.error('Error parsing user data:', error);
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+    const initAuth = async () => {
+      const token = localStorage.getItem('token');
+      
+      if (token) {
+        try {
+          // Валидируем токен через бэкенд
+          const response = await apiService.validateToken(token);
+          
+          if (response.success) {
+            setUser(response.user);
+            console.log('✅ Токен валиден, пользователь:', response.user.nickname);
+          } else {
+            console.warn('❌ Невалидный токен:', response.error);
+            localStorage.removeItem('token');
+          }
+        } catch (error) {
+          console.error('Ошибка валидации токена:', error);
+          localStorage.removeItem('token');
+        }
       }
-    }
-    setLoading(false);
+      setLoading(false);
+    };
+
+    initAuth();
   }, []);
 
   const login = async (email, password) => {
     try {
       setLoading(true);
-      console.log('Attempting login with:', { email, password });
+      console.log('🔄 Попытка входа:', { email });
       
-      const response = await fetch('https://squadup-backend-03vr.onrender.com/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-      console.log('Login response:', data);
+      const response = await apiService.login(email, password);
+      console.log('📨 Ответ входа:', response);
       
-      if (data.success && data.user) {
-        setUser(data.user);
-        if (data.token) {
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('user', JSON.stringify(data.user));
+      if (response.success && response.user) {
+        setUser(response.user);
+        if (response.token) {
+          localStorage.setItem('token', response.token);
         }
+        // Обновляем активность
+        await apiService.updateActivity(response.user.id);
         return { success: true };
       } else {
         return { 
           success: false, 
-          error: data.error || data.message || 'Login failed' 
+          error: response.error || 'Вход не удался' 
         };
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Ошибка входа:', error);
       return { 
         success: false, 
-        error: 'Network error. Please try again.' 
+        error: 'Ошибка сети. Проверьте подключение.' 
       };
     } finally {
       setLoading(false);
@@ -74,37 +79,28 @@ export const AuthProvider = ({ children }) => {
   const register = async (email, password, nickname) => {
     try {
       setLoading(true);
-      console.log('Attempting registration with:', { email, password, nickname });
+      console.log('🔄 Регистрация:', { email, nickname });
       
-      const response = await fetch('https://squadup-backend-03vr.onrender.com/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password, nickname }),
-      });
-
-      const data = await response.json();
-      console.log('Registration response:', data);
+      const response = await apiService.register(email, password, nickname);
+      console.log('📨 Ответ регистрации:', response);
       
-      if (data.success && data.user) {
-        setUser(data.user);
-        if (data.token) {
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('user', JSON.stringify(data.user));
+      if (response.success && response.user) {
+        setUser(response.user);
+        if (response.token) {
+          localStorage.setItem('token', response.token);
         }
         return { success: true };
       } else {
         return { 
           success: false, 
-          error: data.error || data.message || 'Registration failed' 
+          error: response.error || 'Регистрация не удалась' 
         };
       }
     } catch (error) {
-      console.error('Registration error:', error);
+      console.error('Ошибка регистрации:', error);
       return { 
         success: false, 
-        error: 'Network error. Please try again.' 
+        error: 'Ошибка сети. Проверьте подключение.' 
       };
     } finally {
       setLoading(false);
@@ -114,7 +110,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    console.log('👋 Пользователь вышел');
   };
 
   const value = {
