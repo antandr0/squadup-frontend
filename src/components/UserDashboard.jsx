@@ -190,3 +190,4 @@ const UserDashboard = () => {
 };
 
 export default UserDashboard;
+// Якорь коммита: 09.12.2025 14:41 - Dashboard показывает онлайн из БД

@@ -120,3 +120,4 @@ class ApiService {
 // Экспортируем экземпляр
 const apiService = new ApiService();
 export { apiService };
+// Якорь коммита: 09.12.2025 14:41 - Работает онлайн из БД
