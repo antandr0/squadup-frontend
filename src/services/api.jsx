@@ -67,27 +67,28 @@ class ApiService {
     });
   }
 
-  // 👥 ПРОФИЛИ (ПОЛУЧАЕМ ИЗ РЕАЛЬНОЙ БАЗЫ ДАННЫХ)
+  // 👥 ПРОФИЛИ
   async getAllProfiles() {
     const response = await this.request('/api/profiles/all');
     
-    // 🔍 ДЕБАГ: Логируем что пришло с бэкенда
     if (response.success) {
       console.log(`📊 Реальные данные из БД: ${response.total} пользователей`);
       console.log(`🟢 Онлайн из БД: ${response.online_count} пользователей`);
-      
-      if (response.users && response.users.length > 0) {
-        console.log('👤 Первый пользователь из БД:', {
-          id: response.users[0].id,
-          nickname: response.users[0].nickname,
-          online: response.users[0].online,
-          email: response.users[0].email,
-          last_active: response.users[0].last_active
-        });
-      }
     }
     
     return response;
+  }
+
+  // ⭐ КРИТИЧЕСКИЙ МЕТОД
+  async getProfiles(userId = null) {
+    console.log('🔄 API: Вызов getProfiles с userId:', userId);
+    
+    if (userId) {
+      return this.request(`/api/profiles?user_id=${userId}`);
+    } else {
+      const response = await this.getAllProfiles();
+      return response.success ? response.users || [] : [];
+    }
   }
 
   async getProfile(userId) {
@@ -101,7 +102,7 @@ class ApiService {
     });
   }
 
-  // 🗄️ РЕАЛЬНЫЕ БЭКАПЫ ИЗ БАЗЫ ДАННЫХ
+  // 🗄 РЕАЛЬНЫЕ БЭКАПЫ
   async createBackup() {
     return this.request('/api/auth/backup');
   }
@@ -110,10 +111,12 @@ class ApiService {
     return this.request('/api/auth/backup-list');
   }
 
-  // 🏥 ПРОВЕРКА РАБОТЫ СЕРВЕРА
+  // 🏥 ПРОВЕРКА СЕРВЕРА
   async checkHealth() {
     return this.request('/health');
   }
 }
 
-export const apiService = new ApiService();
+// Экспортируем экземпляр
+const apiService = new ApiService();
+export { apiService };

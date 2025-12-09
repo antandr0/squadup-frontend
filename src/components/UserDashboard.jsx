@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { apiService } from '../services/api';
+// Используем существующий файл api.jsx
+import { apiService } from '../services/api.jsx';
 import VoiceChat from './VoiceChat';
 import './UserDashboard.css';
 
@@ -24,9 +25,26 @@ const UserDashboard = () => {
   const loadDashboardData = async () => {
     try {
       setLoading(true);
+      console.log('🔄 Dashboard: Начинаем загрузку данных...');
+      
+      // Проверяем доступность apiService
+      if (!apiService) {
+        console.error('❌ Dashboard: apiService не определен');
+        return;
+      }
+      
+      console.log('✅ Dashboard: apiService доступен');
+      
+      // Вызываем getProfiles
       const profilesData = await apiService.getProfiles();
+      
+      console.log('📊 Dashboard: Получены данные:', profilesData);
+      
       if (profilesData && Array.isArray(profilesData)) {
         setProfiles(profilesData.slice(0, 6));
+        console.log(`✅ Dashboard: Успешно загружено ${profilesData.length} профилей`);
+      } else {
+        console.warn('⚠️  Dashboard: Получены некорректные данные');
       }
 
       setUserStats({
@@ -37,7 +55,7 @@ const UserDashboard = () => {
         onlineTime: '2ч 15м'
       });
     } catch (error) {
-      console.error('Error loading dashboard data:', error);
+      console.error('Dashboard: Error loading data:', error);
     } finally {
       setLoading(false);
     }
@@ -100,120 +118,68 @@ const UserDashboard = () => {
                   <span className="stat-value">--</span>
                   <span className="stat-label">рейтинг</span>
                 </div>
-                <div className="stat-item">
-                  <span className="stat-value">{userStats.onlineTime}</span>
-                  <span className="stat-label">в сети</span>
-                </div>
               </div>
             </div>
             <div className="user-status">
-              <div className="status-indicator online"></div>
-              <span>В сети</span>
+              <span className="status-indicator online"></span>
+              <span className="status-text">В сети</span>
             </div>
           </div>
 
-          <div className="dashboard-main">
-            {/* Табы навигации */}
-            <div className="dashboard-tabs">
-              <button 
-                className={`tab-button ${activeTab === 'teammates' ? 'active' : ''}`}
-                onClick={() => setActiveTab('teammates')}
-              >
-                👥 Найти тиммейтов
-              </button>
-              <button 
-                className={`tab-button ${activeTab === 'friends' ? 'active' : ''}`}
-                onClick={handleFriendsTab}
-              >
-                🤝 Друзья
-              </button>
-              <button 
-                className={`tab-button ${activeTab === 'voice' ? 'active' : ''}`}
-                onClick={() => setActiveTab('voice')}
-              >
-                🎤 Голосовой чат
-              </button>
-            </div>
+          {/* Вкладки */}
+          <div className="dashboard-tabs">
+            <button 
+              className={`tab-button ${activeTab === 'teammates' ? 'active' : ''}`}
+              onClick={handleFindTeammates}
+            >
+              Найти тиммейтов
+            </button>
+            <button 
+              className={`tab-button ${activeTab === 'friends' ? 'active' : ''}`}
+              onClick={handleFriendsTab}
+            >
+              Мои друзья
+            </button>
+          </div>
 
-            {/* Контент в зависимости от активного таба */}
-            {activeTab === 'teammates' && (
-              <>
-                {/* Быстрые действия */}
-                <div className="dashboard-actions enhanced">
-                  <h3 className="actions-title">Быстрые действия</h3>
-                  <div className="action-buttons-grid">
-                    <button className="action-btn primary" onClick={handleFindTeammates}>
-                      🎯 Найти тиммейтов
-                    </button>
-                    <button className="action-btn secondary" onClick={handleCreateRoom}>
-                      🎮 Создать комнату
-                    </button>
-                    <button className="action-btn secondary" onClick={handleJoinRandom}>
-                      🔥 Присоединиться
-                    </button>
-                    <button className="action-btn secondary" onClick={handleFriendsTab}>
-                      🤝 Мои друзья
+          {/* Голосовой чат */}
+          <div className="voice-chat-section">
+            <VoiceChat />
+          </div>
+
+          {/* Онлайн игроки */}
+          <div className="online-players-section" id="online-players">
+            <h2 className="section-title">
+              Онлайн игроки <span className="online-count">({profiles.filter(p => p.online).length})</span>
+            </h2>
+            
+            {loading ? (
+              <div className="loading-spinner">Загрузка...</div>
+            ) : profiles.length > 0 ? (
+              <div className="players-grid">
+                {profiles.map((player) => (
+                  <div key={player.id} className="player-card">
+                    <div className="player-avatar">
+                      {player.nickname?.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="player-info">
+                      <h4 className="player-name">{player.nickname || player.email}</h4>
+                      <div className="player-meta">
+                        <span className={`player-status ${player.online ? 'online' : 'offline'}`}>
+                          {player.online ? 'В сети' : 'Не в сети'}
+                        </span>
+                        <span className="player-game">CS2</span>
+                      </div>
+                    </div>
+                    <button className="invite-button">
+                      Пригласить
                     </button>
                   </div>
-                </div>
-
-                {/* Онлайн игроки */}
-                <div id="online-players" className="online-players-section">
-                  <h3 className="section-title">Игроки онлайн ({profiles.length})</h3>
-                  {loading ? (
-                    <div className="loading-players">
-                      <div className="loading-spinner"></div>
-                      <p>Загружаем список игроков...</p>
-                    </div>
-                  ) : (
-                    <div className="players-grid">
-                      {profiles.map((profile) => (
-                        <div key={profile.id} className="player-card">
-                          <div className="player-avatar">
-                            {profile.nickname?.charAt(0).toUpperCase()}
-                          </div>
-                          <div className="player-info">
-                            <h4 className="player-name">{profile.nickname}</h4>
-                            <p className="player-status">
-                              <span className="status-indicator small online"></span>
-                              В сети
-                            </p>
-                            <p className="player-rating">
-                              ⭐ {profile.overallRating || '4.5'}
-                            </p>
-                            <p className="player-mode">{profile.playMode || 'casual'}</p>
-                          </div>
-                          <button className="invite-btn">
-                            Пригласить
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-
-            {activeTab === 'voice' && (
-              <div className="voice-chat-section">
-                <h3 className="section-title">Голосовой чат</h3>
-                <VoiceChat />
+                ))}
               </div>
-            )}
-
-            {activeTab === 'friends' && (
-              <div className="friends-section">
-                <h3 className="section-title">Мои друзья</h3>
-                <div className="coming-soon">
-                  <div className="coming-soon-icon">🚧</div>
-                  <div className="coming-soon-content">
-                    <h4>Раздел "Друзья" в разработке</h4>
-                    <p>
-                      Скоро здесь появится список ваших друзей, история игр вместе 
-                      и быстрые приглашения в голосовой чат.
-                    </p>
-                  </div>
-                </div>
+            ) : (
+              <div className="empty-state">
+                <p>Нет онлайн игроков в данный момент</p>
               </div>
             )}
           </div>
