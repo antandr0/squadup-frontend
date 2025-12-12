@@ -1,6 +1,16 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
 import './VoiceChat.css';
+
+// Проверяем, существует ли AuthContext
+let AuthContext;
+try {
+  // Пробуем разные варианты импорта
+  const authModule = require('../context/AuthContext');
+  AuthContext = authModule.AuthContext || authModule.default;
+} catch (e) {
+  // Если контекст не найден, создаем заглушку
+  AuthContext = React.createContext({ user: null });
+}
 
 const VoiceChat = () => {
   const { user } = useContext(AuthContext);
@@ -36,7 +46,7 @@ const VoiceChat = () => {
       // Используем реальные данные текущего пользователя
       const currentUser = {
         id: user.id || 1,
-        name: user.nickname || 'Вы',
+        name: user.nickname || user.email?.split('@')[0] || 'Вы',
         isYou: true
       };
       

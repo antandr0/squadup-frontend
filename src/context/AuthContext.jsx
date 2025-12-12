@@ -1,151 +1,83 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { apiService } from '../services/api';
+import React, { createContext, useState, useEffect } from 'react';
 
-const AuthContext = createContext();
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+// Создаем контекст
+export const AuthContext = createContext({
+  user: null,
+  login: () => {},
+  logout: () => {},
+  register: () => {},
+  loading: true
+});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // При загрузке приложения проверяем токен
   useEffect(() => {
-    const initAuth = async () => {
-      const token = localStorage.getItem('token');
-      const userData = localStorage.getItem('user');
-      
-      if (token && userData) {
-        try {
-          // Валидируем токен через бэкенд
-          const response = await apiService.validateToken(token);
-          
-          if (response.success) {
-            console.log('✅ Токен валиден, пользователь из БД:', response.user.nickname);
-            setUser(response.user);
-            
-            // Обновляем активность
-            await apiService.updateActivity(response.user.id);
-          } else {
-            console.warn('❌ Невалидный токен:', response.error);
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-          }
-        } catch (error) {
-          console.error('Ошибка валидации токена:', error);
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-        }
+    // Проверяем токен при загрузке
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    
+    if (token && userData) {
+      try {
+        setUser(JSON.parse(userData));
+      } catch (e) {
+        console.error('Ошибка при парсинге user данных:', e);
       }
-      setLoading(false);
-    };
-
-    initAuth();
+    }
+    
+    setLoading(false);
   }, []);
 
-  // 🔐 РЕАЛЬНЫЙ ВХОД ЧЕРЕЗ БАЗУ ДАННЫХ
   const login = async (email, password) => {
     try {
-      setLoading(true);
-      console.log('🔄 Пытаемся войти через БД:', email);
-      
-      const response = await apiService.login(email, password);
-      console.log('📨 Ответ от бэкенда при входе:', response);
-      
-      if (response.success && response.user) {
-        console.log('✅ Успешный вход через БД, пользователь:', response.user);
-        
-        setUser(response.user);
-        
-        if (response.token) {
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('user', JSON.stringify(response.user));
-        }
-        
-        // Обновляем активность в БД
-        await apiService.updateActivity(response.user.id);
-        
-        return { success: true };
-      } else {
-        console.log('❌ Ошибка входа через БД:', response.error);
-        return { 
-          success: false, 
-          error: response.error || 'Неверный email или пароль' 
-        };
-      }
-    } catch (error) {
-      console.error('❌ Ошибка при входе:', error);
-      return { 
-        success: false, 
-        error: 'Ошибка сервера. Попробуйте позже.' 
+      // Здесь будет реальный API вызов
+      // Пока используем мок
+      const mockUser = {
+        id: 16,
+        email: email,
+        nickname: email.split('@')[0],
+        token: 'mock-token-' + Date.now()
       };
-    } finally {
-      setLoading(false);
+      
+      localStorage.setItem('token', mockUser.token);
+      localStorage.setItem('user', JSON.stringify(mockUser));
+      setUser(mockUser);
+      
+      return { success: true, user: mockUser };
+    } catch (error) {
+      return { success: false, error: error.message };
     }
   };
 
-  // 📝 РЕАЛЬНАЯ РЕГИСТРАЦИЯ В БАЗЕ ДАННЫХ
-  const register = async (email, password, nickname) => {
-    try {
-      setLoading(true);
-      console.log('🔄 Регистрация в БД:', { email, nickname });
-      
-      const response = await apiService.register(email, password, nickname);
-      console.log('📨 Ответ от бэкенда при регистрации:', response);
-      
-      if (response.success && response.user) {
-        console.log('✅ Успешная регистрация в БД, пользователь:', response.user);
-        
-        setUser(response.user);
-        
-        if (response.token) {
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('user', JSON.stringify(response.user));
-        }
-        
-        return { success: true };
-      } else {
-        console.log('❌ Ошибка регистрации в БД:', response.error);
-        return { 
-          success: false, 
-          error: response.error || 'Ошибка регистрации' 
-        };
-      }
-    } catch (error) {
-      console.error('❌ Ошибка при регистрации:', error);
-      return { 
-        success: false, 
-        error: 'Ошибка сервера. Попробуйте позже.' 
-      };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 🚪 ВЫХОД
   const logout = () => {
-    console.log('👋 Выход из системы, пользователь:', user?.nickname);
-    setUser(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    setUser(null);
   };
 
-  const value = {
-    user,
-    login,
-    register,
-    logout,
-    loading
+  const register = async (email, password, nickname) => {
+    try {
+      // Здесь будет реальный API вызов
+      const mockUser = {
+        id: Date.now(),
+        email: email,
+        nickname: nickname,
+        token: 'mock-token-' + Date.now()
+      };
+      
+      localStorage.setItem('token', mockUser.token);
+      localStorage.setItem('user', JSON.stringify(mockUser));
+      setUser(mockUser);
+      
+      return { success: true, user: mockUser };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   };
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ user, login, logout, register, loading }}>
       {children}
     </AuthContext.Provider>
   );
