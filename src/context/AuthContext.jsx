@@ -1,50 +1,90 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { apiService } from '../services/api';
 
-// Создаем контекст
-export const AuthContext = createContext({
-  user: null,
-  login: () => {},
-  logout: () => {},
-  register: () => {},
-  loading: true
-});
+// СОЗДАЕМ КОНТЕКСТ И ЭКСПОРТИРУЕМ ЕГО
+export const AuthContext = createContext();
 
+// СОЗДАЕМ И ЭКСПОРТИРУЕМ ХУК useAuth
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+
+// СОЗДАЕМ И ЭКСПОРТИРУЕМ ПРОВАЙДЕР
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // При загрузке приложения проверяем токен
   useEffect(() => {
-    // Проверяем токен при загрузке
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
-    
-    if (token && userData) {
-      try {
-        setUser(JSON.parse(userData));
-      } catch (e) {
-        console.error('Ошибка при парсинге user данных:', e);
+    const initAuth = async () => {
+      const token = localStorage.getItem('token');
+      const userData = localStorage.getItem('user');
+
+      if (token && userData) {
+        try {
+          // Валидируем токен через бэкенд
+          const validationResult = await apiService.validateToken(token);
+          
+          if (validationResult.success) {
+            setUser(JSON.parse(userData));
+          } else {
+            // Токен невалидный, чистим хранилище
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+          }
+        } catch (error) {
+          console.error('Ошибка при валидации токена:', error);
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+        }
       }
-    }
-    
-    setLoading(false);
+      
+      setLoading(false);
+    };
+
+    initAuth();
   }, []);
 
   const login = async (email, password) => {
     try {
-      // Здесь будет реальный API вызов
-      // Пока используем мок
-      const mockUser = {
-        id: 16,
-        email: email,
-        nickname: email.split('@')[0],
-        token: 'mock-token-' + Date.now()
-      };
+      const result = await apiService.login(email, password);
       
-      localStorage.setItem('token', mockUser.token);
-      localStorage.setItem('user', JSON.stringify(mockUser));
-      setUser(mockUser);
+      if (result.success) {
+        const userData = result.user;
+        localStorage.setItem('token', userData.token);
+        localStorage.setItem('user', JSON.stringify(userData));
+        setUser(userData);
+        
+        // Обновляем активность пользователя
+        await apiService.updateActivity(userData.id);
+        
+        return { success: true, user: userData };
+      } else {
+        return { success: false, error: result.error };
+      }
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  };
+
+  const register = async (email, password, nickname) => {
+    try {
+      const result = await apiService.register(email, password, nickname);
       
-      return { success: true, user: mockUser };
+      if (result.success) {
+        const userData = result.user;
+        localStorage.setItem('token', userData.token);
+        localStorage.setItem('user', JSON.stringify(userData));
+        setUser(userData);
+        
+        return { success: true, user: userData };
+      } else {
+        return { success: false, error: result.error };
+      }
     } catch (error) {
       return { success: false, error: error.message };
     }
@@ -56,31 +96,20 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const register = async (email, password, nickname) => {
-    try {
-      // Здесь будет реальный API вызов
-      const mockUser = {
-        id: Date.now(),
-        email: email,
-        nickname: nickname,
-        token: 'mock-token-' + Date.now()
-      };
-      
-      localStorage.setItem('token', mockUser.token);
-      localStorage.setItem('user', JSON.stringify(mockUser));
-      setUser(mockUser);
-      
-      return { success: true, user: mockUser };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
+  const value = {
+    user,
+    login,
+    register,
+    logout,
+    loading
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, register, loading }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
 };
 
+// ЭКСПОРТИРУЕМ ПО УМОЛЧАНИЮ КОНТЕКСТ
 export default AuthContext;
