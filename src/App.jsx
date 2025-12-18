@@ -155,3 +155,4 @@ const App = () => {
 export default App;
 
 // 🚀 Vercel deploy trigger Чт 18 дек 2025 18:38:35 MSK
+// Deploy: Чт 18 дек 2025 19:08:17 MSK
