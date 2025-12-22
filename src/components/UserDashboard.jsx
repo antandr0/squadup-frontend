@@ -147,7 +147,9 @@ const UserDashboard = () => {
             <VoiceChat />
           </div>
 
-    </section>
+        </div> {/* Закрываем .dashboard-content */}
+      </div> {/* Закрываем .dashboard-container */}
+    </section> {/* Закрываем .user-dashboard */}
   );
 };
 
