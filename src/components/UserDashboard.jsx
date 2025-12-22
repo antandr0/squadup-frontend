@@ -26,20 +26,20 @@ const UserDashboard = () => {
     try {
       setLoading(true);
       console.log('🔄 Dashboard: Начинаем загрузку данных...');
-      
+
       // Проверяем доступность apiService
       if (!apiService) {
         console.error('❌ Dashboard: apiService не определен');
         return;
       }
-      
+
       console.log('✅ Dashboard: apiService доступен');
-      
+
       // Вызываем getProfiles
       const profilesData = await apiService.getProfiles();
-      
+
       console.log('📊 Dashboard: Получены данные:', profilesData);
-      
+
       if (profilesData && Array.isArray(profilesData)) {
         setProfiles(profilesData.slice(0, 6));
         console.log(`✅ Dashboard: Успешно загружено ${profilesData.length} профилей`);
@@ -85,71 +85,70 @@ const UserDashboard = () => {
 
   return (
     <section className="user-dashboard">
-      <div className="dashboard-container">
-        <div className="dashboard-header">
-          <h1 className="dashboard-title">
-            Добро пожаловать, <span className="user-highlight">{user.nickname}</span>!
-          </h1>
-        </div>
+    <div className="dashboard-container">
+    <div className="dashboard-header">
+    <h1 className="dashboard-title">
+    Добро пожаловать, <span className="user-highlight">{user.nickname}</span>!
+    </h1>
+    </div>
 
-        <div className="dashboard-content">
-          {/* Карточка пользователя со статистикой */}
-          <div className="user-card enhanced">
-            <div className="user-avatar">
-              {user.nickname?.charAt(0).toUpperCase()}
-            </div>
-            <div className="user-info">
-              <h3 className="user-name">{user.nickname}</h3>
-              <p className="user-email">{user.email}</p>
-              <div className="user-stats-grid">
-                <div className="stat-item">
-                  <span className="stat-value">--</span>
-                  <span className="stat-label">матчей</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-value">--</span>
-                  <span className="stat-label">побед</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-value">--</span>
-                  <span className="stat-label">друзей</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-value">--</span>
-                  <span className="stat-label">рейтинг</span>
-                </div>
-              </div>
-            </div>
-            <div className="user-status">
-              <span className="status-indicator online"></span>
-              <span className="status-text">В сети</span>
-            </div>
-          </div>
+    <div className="dashboard-content">
+    {/* Карточка пользователя со статистикой */}
+    <div className="user-card enhanced">
+    <div className="user-avatar">
+    {user.nickname?.charAt(0).toUpperCase()}
+    </div>
+    <div className="user-info">
+    <h3 className="user-name">{user.nickname}</h3>
+    <p className="user-email">{user.email}</p>
+    <div className="user-stats-grid">
+    <div className="stat-item">
+    <span className="stat-value">--</span>
+    <span className="stat-label">переменная матчей</span>
+    </div>
+    <div className="stat-item">
+    <span className="stat-value">--</span>
+    <span className="stat-label">переменная побед</span>
+    </div>
+    <div className="stat-item">
+    <span className="stat-value">--</span>
+    <span className="stat-label">переменная друзей</span>
+    </div>
+    <div className="stat-item">
+    <span className="stat-value">--</span>
+    <span className="stat-label">переменная рейтинг</span>
+    </div>
+    </div>
+    </div>
+    <div className="user-status">
+    <span className="status-indicator online"></span>
+    <span className="status-text">пример переменной В сети</span>
+    </div>
+    </div>
 
-          {/* Вкладки */}
-          <div className="dashboard-tabs">
-            <button 
-              className={`tab-button ${activeTab === 'teammates' ? 'active' : ''}`}
-              onClick={handleFindTeammates}
-            >
-              Найти тиммейтов
-            </button>
-            <button 
-              className={`tab-button ${activeTab === 'friends' ? 'active' : ''}`}
-              onClick={handleFriendsTab}
-            >
-              Мои друзья
-            </button>
-          </div>
+    {/* Вкладки */}
+    <div className="dashboard-tabs">
+    <button
+    className={`tab-button ${activeTab === 'teammates' ? 'active' : ''}`}
+    onClick={handleFindTeammates}
+    >
+    Найти игроков
+    </button>
+    <button
+    className={`tab-button ${activeTab === 'friends' ? 'active' : ''}`}
+    onClick={handleFriendsTab}
+    >
+    Мои друзья
+    </button>
+    </div>
 
-          {/* Голосовой чат */}
-          <div className="voice-chat-section">
-            <VoiceChat />
-          </div>
-
-        </div> {/* Закрываем .dashboard-content */}
-      </div> {/* Закрываем .dashboard-container */}
-    </section> {/* Закрываем .user-dashboard */}
+    {/* тестовый Голосовой чат */}
+    <div className="voice-chat-section">
+    <VoiceChat />
+    </div>
+    </div>
+    </div>
+    </section>
   );
 };
 
