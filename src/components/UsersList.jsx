@@ -128,7 +128,7 @@ const UsersList = () => {
   return (
     <div className="users-list">
       <div className="users-header">
-        <h2>👥 Игроки в системе (реальные данные из БД)</h2>
+        <h2>👥 В системе (из БД)</h2>
         <div className="online-counter">
           <span className="online-dot"></span>
           <span>Онлайн сейчас: <strong>{onlineCount}</strong> из <strong>{users.length}</strong></span>
