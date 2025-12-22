@@ -147,44 +147,6 @@ const UserDashboard = () => {
             <VoiceChat />
           </div>
 
-          {/* Онлайн игроки */}
-          <div className="online-players-section" id="online-players">
-            <h2 className="section-title">
-              Онлайн игроки <span className="online-count">({profiles.filter(p => p.online).length})</span>
-            </h2>
-            
-            {loading ? (
-              <div className="loading-spinner">Загрузка...</div>
-            ) : profiles.length > 0 ? (
-              <div className="players-grid">
-                {profiles.map((player) => (
-                  <div key={player.id} className="player-card">
-                    <div className="player-avatar">
-                      {player.nickname?.charAt(0).toUpperCase()}
-                    </div>
-                    <div className="player-info">
-                      <h4 className="player-name">{player.nickname || player.email}</h4>
-                      <div className="player-meta">
-                        <span className={`player-status ${player.online ? 'online' : 'offline'}`}>
-                          {player.online ? 'В сети' : 'Не в сети'}
-                        </span>
-                        <span className="player-game">CS2</span>
-                      </div>
-                    </div>
-                    <button className="invite-button">
-                      Пригласить
-                    </button>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="empty-state">
-                <p>Нет онлайн игроков в данный момент</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
     </section>
   );
 };
